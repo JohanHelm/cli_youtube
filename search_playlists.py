@@ -41,10 +41,10 @@ class PaylistsSearcher:
 
 channel_id = 'UCN3nx9hIzgItJeDb5FFfy0Q'
 playlist_search = PaylistsSearcher(youtube)
-# c = playlist_search.find_playlists(channel_id)
+c = playlist_search.find_playlists(channel_id)
 #
-# for playlist in c:
-#     # print(title, description, thumbnails, playist_id, videos)
-#     print(playlist)
-#     print('---------------------')
+for playlist in c:
+    # print(title, description, thumbnails, playist_id, videos)
+    print(playlist)
+    print('---------------------')
 

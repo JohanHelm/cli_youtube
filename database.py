@@ -9,7 +9,7 @@ class Database:
                             "channelTitle TEXT, publishedAt TEXT, channelId TEXT, description TEXT, thumbnails TEXT)")
         self.cursor.execute(
             "CREATE TABLE IF NOT EXISTS playlists(title TEXT, description TEXT, thumbnails TEXT, playlist_id TEXT, videos TEXT)")
-        self.cursor.execute("CREATE TABLE IF NOT EXISTS videos("
+        # self.cursor.execute("CREATE TABLE IF NOT EXISTS videos("
 
     def save_temp_channel(self, num, channeltitle, publishedat, channelid, description, thumbnails):
         with self.connection:

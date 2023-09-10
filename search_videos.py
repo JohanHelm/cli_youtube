@@ -1,5 +1,5 @@
 from youtube_api import youtube
-from database import db
+# from database import db
 
 # quota cost of 100 unit.
 # Поиск видео по id канала
@@ -11,7 +11,7 @@ from database import db
 types = ('video', 'channel', 'playlist')
 channel_id = 'UCZ26MoNJKaGXFQWKuGVzmAg'
 nextPageToken = 'CA8QAA'
-response = youtube.search().list(channelId=channel_id, part='snippet', type='video', maxResults=50).execute()
+response = youtube.search().list(channelId=channel_id, part='snippet', type='video', maxResults=1, order='date').execute()
 
 print(response)
 
