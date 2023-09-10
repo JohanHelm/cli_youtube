@@ -14,20 +14,21 @@ class YoutubeManager:
 
     def add_fav_channel(self, selected_item):
         # Достать id канала
-        channel_id = db.get_channel_from_temp(selected_item)[3]
+        channel_info = db.get_channel_from_temp(selected_item)[1:]
         # скачать инфу о всех видео канала
         # Скачать инфу о всех плейлисах канала и добавить в базу
-        for playlist in playlist_search.find_playlists(channel_id):
 
-        # Скачать инфу о всех видео плейлиста
+        for title, description, thumbnails, playist_id in playlist_search.find_playlists(channel_info[2]):
+            db.add_playlist(title, description, thumbnails, playist_id, channel_info[2])
+        #
         #
 
 
-        # db.add_fav_channel(selected_item)
+        db.add_channel(*channel_info)
         # print(db.get_channel_from_temp(selected_item))
-        print(*)
+        # print(playlist_search.find_playlists(channel_id))
 
 yt = YoutubeManager(youtube)
-yt.add_fav_channel(0)
+# yt.add_fav_channel(0)
 
 

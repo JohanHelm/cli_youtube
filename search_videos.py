@@ -1,8 +1,9 @@
-from googleapiclient.discovery import build
-### quota cost of 100 unit. ###
+from youtube_api import youtube
+from database import db
 
-KEY = 'AIzaSyDWO6QmE-DV16-NQ19EYYHxeH1E-xrCu_w'
-youtube = build('youtube', 'v3', developerKey=KEY)
+# quota cost of 100 unit.
+# Поиск видео по id канала
+### quota cost of 100 unit. ###
 
 
 # Выполнение запроса к API для поиска каналов/видео

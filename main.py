@@ -50,7 +50,7 @@ def main(stdscr):
                     menu_win.addstr(i * interval + j + vertical_shift_2, horizontal_shift_2, line)
 
         menu_win.addstr(menu_height - menu_text_height - menu_options_height - interval, 2,
-                        f"Выбрано: {menu_level} {demand_user_input} {user_input}")
+                        f"Выбрано: {menu_level} {demand_user_input} {user_input} {menu_height} {menu_width}")
 
         menu_win.refresh()
 

@@ -23,7 +23,7 @@ class ChannelSearcher:
         channels = response['items']
         for num, channel in enumerate(channels):
             channel_info = channel['snippet']
-            db.save_temp_channel(num, channel_info['channelTitle'], channel_info['publishedAt'], channel_info['channelId'], channel_info['description'], channel_info['thumbnails']['high']['url'])
+            db.save_temp_channel(num, channel_info['channelTitle'], channel_info['publishedAt'], channel_info['channelId'], channel_info['description'], channel_info['thumbnails']['default']['url'])
             channel_data = f"Канал: {channel_info['channelTitle']} {channel_info['publishedAt']} {channel_info['description'][:100]}"
             found_channels.append(channel_data)
         return found_channels
@@ -45,7 +45,7 @@ class ChannelSearcher:
 
 
 # Выполнение запроса к API для поиска канала по имени
-# search_query = 'Чёрный Треугольник'
+# search_query = 'Легенарные бои'
 
 channel_search = ChannelSearcher(youtube)
 # print(channel_search.find_channel(search_query))
