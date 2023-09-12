@@ -7,9 +7,11 @@ class Database:
         self.cursor = self.connection.cursor()
         self.cursor.execute("CREATE TABLE IF NOT EXISTS channels("
                             "channelTitle TEXT, publishedAt TEXT, channelId TEXT, description TEXT, thumbnails TEXT)")
-        self.cursor.execute(
-            "CREATE TABLE IF NOT EXISTS playlists(title TEXT, description TEXT, thumbnails TEXT, playlist_id TEXT, videos TEXT)")
-        # self.cursor.execute("CREATE TABLE IF NOT EXISTS videos("
+        self.cursor.execute("CREATE TABLE IF NOT EXISTS playlists("
+                            "title TEXT, description TEXT, thumbnails TEXT, playlist_id TEXT, channel_id TEXT)")
+        self.cursor.execute("CREATE TABLE IF NOT EXISTS videos(title TEXT, description TEXT, author TEXT, "
+                            "publishedAt DATETIME, thumbnails TEXT, video_id TEXT, playlist_id TEXT, channel_id TEXT, "
+                            "viewed BOOLEAN DEFAULT (0))")
 
     def save_temp_channel(self, num, channeltitle, publishedat, channelid, description, thumbnails):
         with self.connection:
@@ -34,12 +36,17 @@ class Database:
                                 "VALUES (?, ?, ?, ?, ?)",
                                 (channeltitle, publishedat, channelid, description, thumbnails,))
 
-
     def add_playlist(self, title, description, thumbnails, playist_id, channel_id):
         with self.connection:
             self.cursor.execute(
-                "INSERT INTO playlists (title, description, thumbnails, playlist_id, channel_id) VALUES (?, ?, ?, ?, ?)",
-                (title, description, thumbnails, playist_id, channel_id,))
+                "INSERT INTO playlists (title, description, thumbnails, playlist_id, channel_id) "
+                "VALUES (?, ?, ?, ?, ?)", (title, description, thumbnails, playist_id, channel_id,))
+
+    def add_video(self, title, description, author, published_at, thumbnails, video_id, channel_id):
+        with self.connection:
+            self.cursor.execute("INSERT INTO videos (title, description, author, publishedAt, thumbnails, video_id, "
+                                " channel_id) VALUES (?, ?, ?, ?, ?, ?, ?)", (title, description, author, published_at,
+                                                                              thumbnails, video_id, channel_id,))
 
 
 db = Database('my_favorites.db')

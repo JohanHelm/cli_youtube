@@ -48,6 +48,6 @@ class ChannelSearcher:
 search_query = 'Легенарные бои'
 
 channel_search = ChannelSearcher(youtube)
-print(channel_search.find_channel(search_query))
+# print(channel_search.find_channel(search_query))
 # channel_search.next_page(search_query)
 # channel_search.prev_page(search_query)
