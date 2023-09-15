@@ -1,4 +1,5 @@
 import sqlite3
+from math import ceil
 
 
 class Database:
@@ -16,10 +17,17 @@ class Database:
     def save_temp_channel(self, num, channeltitle, publishedat, channelid, description, thumbnails):
         with self.connection:
             self.cursor.execute("""CREATE TABLE IF NOT EXISTS temp_channel_search(num INTEGER, 
-            channelTitle TEXT, publishedAt TEXT, channelId TEXT, description TEXT, thumbnails TEXT)""")
+            channelTitle TEXT, publishedAt DATETIME, channelId TEXT, description TEXT, thumbnails TEXT)""")
+
             self.cursor.execute("INSERT INTO temp_channel_search (num, channelTitle, publishedAt, channelId,"
                                 " description, thumbnails) VALUES (?, ?, ?, ?, ?, ?)",
                                 (num, channeltitle, publishedat, channelid, description, thumbnails,))
+
+    def show_temp_channels(self, page):
+        with self.connection:
+            pages = ceil(self.cursor.execute("SELECT COUNT(*) FROM temp_channel_search").fetchone()[0] / 5)
+            offset = (page - 1) * 5
+            return self.cursor.execute("SELECT channelTitle, publishedAt, description FROM temp_channel_search LIMIT 5 OFFSET ?", (offset,)).fetchall(), pages
 
     def clear_temp_channel(self):
         with self.connection:
@@ -50,3 +58,5 @@ class Database:
 
 
 db = Database('my_favorites.db')
+# print([' '.join(i) for i in db.show_temp_channels()])
+# print(db.show_temp_channels(2))

@@ -2,7 +2,6 @@ import curses
 
 from cli import give_menu
 from user_input import input_hendler
-from database import db
 from youtube import yt
 
 
@@ -24,12 +23,13 @@ def main(stdscr):
     menu_level = 'Главное меню.'  # Инициализируем переменную
     user_input = None
     search_results = None
+    page = 1
 
     while True:
         menu_win.clear()
         # Вызов give_menu из cli, c с передачей уровня меню и длины строки Параметры менюшки: текст, опции
         menu_text, menu_text_height, menu_items, menu_options_height, interval, demand_user_input = give_menu(
-            menu_level, menu_width - 10, search_results)
+            menu_level, menu_width - 10, page)
 
         vertical_shift_1 = 0  # отступ сверху перед текстом
         horizontal_shift_1 = 3  # отступ слева перед текстом
@@ -64,8 +64,13 @@ def main(stdscr):
         elif key == ord('\n') or key == ord('\r'):
             if selected_item == len(menu_items) - 1:
                 break  # Выход из меню
-            elif menu_level == 'Каналы найдены.' and menu_items[selected_item].startswith('Канал: '):
-                yt.add_fav_channel(selected_item)
+            elif menu_level == 'Каналы найдены.':
+                if menu_items[selected_item].startswith('Канал: '):
+                    yt.add_fav_channel(selected_item)
+                elif menu_items[selected_item] == 'Вперёд':
+                    page += 1
+                elif menu_items[selected_item] == 'Назад':
+                    page -= 1
 
             else:
                 menu_level = menu_items[selected_item]
@@ -78,7 +83,7 @@ def main(stdscr):
             user_input = stdscr.getstr(menu_text_height + 1, horizontal_shift_1 + 4, menu_width - 4)
             user_input = user_input.decode("utf-8")
             curses.noecho()  # Выключить отображение ввода на экране
-            menu_level, search_results = input_hendler(menu_level, user_input)
+            menu_level = input_hendler(menu_level, user_input)
 
     # Завершение curses
     curses.endwin()

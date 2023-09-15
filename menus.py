@@ -38,7 +38,7 @@ found_channes = MenuItem('Чтобы добавить канал в избран
 menu = {'Главное меню.': main_menu,
         'Найти видео.': find_video,
         'Найти канал.': find_channel,
-        'Открыть свои избранные каналы.': my_favorite,
+        'Мои избранные каналы.': my_favorite,
         'YOUTUBE API KEY': youtube_api_key,
         'Добавить ключ.': add_api_key,
         'Как добавить ключ.': how_to_add_api_key,

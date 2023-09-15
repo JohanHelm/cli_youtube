@@ -29,7 +29,7 @@ class PaylistsSearcher:
 
 
 
-channel_id = 'UCN3nx9hIzgItJeDb5FFfy0Q'
+# channel_id = 'UCN3nx9hIzgItJeDb5FFfy0Q'
 playlist_search = PaylistsSearcher(youtube)
 
 # c = playlist_search.find_playlists(channel_id)

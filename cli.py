@@ -1,11 +1,11 @@
 from menus import menu
+from database import db
 
 
 def chunk_menu_text(text: str, lenght: int) -> tuple:
     result = []
     temp_list = []
     for word in text.split():
-        print(word)
         temp_list.append(word)
         if len(' '.join(temp_list)) >= lenght:
             result.append(f'{" ".join(temp_list[:-1])}\n')
@@ -14,26 +14,42 @@ def chunk_menu_text(text: str, lenght: int) -> tuple:
     return ' '.join(result), len(result)
 
 
-def chunk_menu_options(items: tuple, lenght: int) -> tuple:
+def chunk_menu_options(items: tuple | list, lenght: int) -> tuple:
+    subinterval = 0
     item_height = 0
     items = list(items)
     for i, option in enumerate(items):
         items[i] = chunk_menu_text(option, lenght)[0]
         if len(items[i].split('\n')) > item_height:
             item_height = len(items[i].split('\n'))
-    interval = item_height + 1  # интервал между опциями меню
-    menu_options_height = len(items) * interval - 1  # Общая высота вариантов менюшки
+    interval = item_height + subinterval  # интервал между опциями меню
+    menu_options_height = len(items) * interval - subinterval  # Общая высота вариантов менюшки
     return tuple(items), menu_options_height, interval
 
 
-def give_menu(level: str, string_lenght: int, search_result) -> tuple:
+def get_pagination(page, pages):
+    pagination = ('Назад', 'Вперёд')
+    if page == 1:
+        pagination = ('Вперёд',)
+    elif page == pages:
+        pagination = ('Назад',)
+    return pagination
+
+
+def give_menu(level: str, string_lenght: int, page) -> tuple:
     menu_text, menu_text_height = chunk_menu_text(menu[level].message, string_lenght)
     if level in ('Каналы найдены.', 'Видео найдены.'):
+        found_channels_data, pages = db.show_temp_channels(page)
+        channels = [' '.join(i) for i in found_channels_data]
+        channels.extend(get_pagination(page, pages))
+        channels.extend(list(menu[level].choices))
+        menu_items, menu_options_height, interval = chunk_menu_options(channels, string_lenght)
 
-        menu_items, menu_options_height, interval = chunk_menu_options(search_result + list(menu[level].choices), string_lenght)
     else:
         menu_items, menu_options_height, interval = chunk_menu_options(menu[level].choices, string_lenght)
     return menu_text, menu_text_height, menu_items, menu_options_height, interval, menu[level].demand_user_input
 
 # chunk_menu_text(menu['Как добавить ключ'].message, 132 - 10)
 # print(chunk_menu_text(menu['Как добавить ключ'].message, 132 - 10))
+# print(give_menu('Каналы найдены.', 130, 1))
+# give_menu('Каналы найдены.', 130, 1)

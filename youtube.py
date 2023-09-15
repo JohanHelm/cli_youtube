@@ -1,17 +1,11 @@
 # from youtube_api import youtube
 from database import db
+from search_channels import channel_search
 from search_playlists import playlist_search
 from search_videos import video_search
 
 
 class YoutubeManager:
-    # def __init__(self):
-    # self.youtube = youtube
-    # self.nextPageToken = None
-    # self.prevPageToken = None
-    # self.part = 'snippet'
-    # self.type = 'channel'
-    # self.page_num = 1
 
     def add_fav_channel(self, selected_item):
         # Достать id канала
@@ -25,13 +19,19 @@ class YoutubeManager:
 
         for title, description, thumbnails, playist_id, videos in playlist_search.find_playlists(channel_info[2]):
             db.add_playlist(title, description, thumbnails, playist_id, channel_info[2])
-        #
-        #
 
         db.add_channel(*channel_info)
         # print(db.get_channel_from_temp(selected_item))
         # print(playlist_search.find_playlists(channel_id))
 
+    def search_channel(self, search_query):
+        db.clear_temp_channel()
+        channel_search.find_channel(search_query)
+        # while channel_search.nextPageToken:
+        #     channel_search.next_page(search_query)
+
+
 
 yt = YoutubeManager()
-# yt.add_fav_channel(0)
+
+# yt.search_channel('python hub studio')
