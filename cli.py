@@ -27,29 +27,41 @@ def chunk_menu_options(items: tuple | list, lenght: int) -> tuple:
     return tuple(items), menu_options_height, interval
 
 
-def get_pagination(page, pages):
-    pagination = ('Назад', 'Вперёд')
-    if page == 1:
-        pagination = ('Вперёд',)
-    elif page == pages:
-        pagination = ('Назад',)
-    return pagination
+def get_pagination(page, pages, level, channels_data):
+    pagination = []
+    if page < pages:
+        pagination.append('Вперёд')
+    if page > 1:
+        pagination.append('Назад')
+
+    channels = [' '.join(i[1:]) for i in channels_data]
+    channels.extend(pagination)
+    channels.extend(list(menu[level].choices))
+    return channels
 
 
-def give_menu(level: str, string_lenght: int, page) -> tuple:
-    menu_text, menu_text_height = chunk_menu_text(menu[level].message, string_lenght)
-    if level in ('Каналы найдены.', 'Видео найдены.'):
-        found_channels_data, pages = db.show_temp_channels(page)
-        channels = [' '.join(i) for i in found_channels_data]
-        channels.extend(get_pagination(page, pages))
-        channels.extend(list(menu[level].choices))
-        menu_items, menu_options_height, interval = chunk_menu_options(channels, string_lenght)
-
+def give_menu(level: str, string_lenght: int, page: int, show_results: int, item_to_show: int) -> tuple:
+    message = menu[level].message
+    results_amount = 0
+    if level == 'Каналы найдены.':
+        found_channels_data, pages = db.show_temp_channels(page, show_results)
+        results_amount = len(found_channels_data)
+        menu_items, menu_options_height, interval = chunk_menu_options(get_pagination(page, pages, level, found_channels_data[1:]), string_lenght)
+    elif level == 'Мои избранные каналы.':
+        my_channels_data, pages = db.show_my_channels(page, show_results)
+        results_amount = len(my_channels_data)
+        menu_items, menu_options_height, interval = chunk_menu_options(get_pagination(page, pages, level, my_channels_data), string_lenght)
+    elif level == 'Данные канала.':
+        channel_id, *chosen_channel_data = db.show_my_channels(page, show_results)[0][item_to_show]
+        message = ' '.join(chosen_channel_data)
+        menu_items, menu_options_height, interval = chunk_menu_options(menu[level].choices, string_lenght)
     else:
         menu_items, menu_options_height, interval = chunk_menu_options(menu[level].choices, string_lenght)
-    return menu_text, menu_text_height, menu_items, menu_options_height, interval, menu[level].demand_user_input
+    menu_text, menu_text_height = chunk_menu_text(message, string_lenght)
+    return menu_text, menu_text_height, menu_items, menu_options_height, interval, menu[level].demand_user_input, results_amount
 
 # chunk_menu_text(menu['Как добавить ключ'].message, 132 - 10)
 # print(chunk_menu_text(menu['Как добавить ключ'].message, 132 - 10))
-# print(give_menu('Каналы найдены.', 130, 1))
-# give_menu('Каналы найдены.', 130, 1)
+# print(give_menu('Мои избранные каналы.', 130, 1, 5 ,0))
+# print(give_menu('Каналы найдены.', 130, 1, 5 ,0))
+# print(menu['Данные канала.'].choices)

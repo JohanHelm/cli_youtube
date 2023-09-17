@@ -1,5 +1,6 @@
-from youtube_api import youtube
 from database import db
+from youtube_api import youtube
+
 
 # quota cost of 100 unit.
 # Поиск канала по имени
@@ -19,15 +20,12 @@ class ChannelSearcher:
                                               q=search_query, maxResults=50).execute()
         self.nextPageToken = response.get('nextPageToken')
         self.prevPageToken = response.get('prevPageToken')
-        # db.clear_temp_channel()
-        # found_channels = []
         channels = response['items']
         for num, channel in enumerate(channels):
             channel_info = channel['snippet']
-            db.save_temp_channel(num + (self.page_num - 1) * 50, channel_info['channelTitle'], channel_info['publishedAt'], channel_info['channelId'], channel_info['description'], channel_info['thumbnails']['default']['url'])
-            # channel_data = f"Канал: {channel_info['channelTitle']} {channel_info['publishedAt']} {channel_info['description'][:100]}"
-            # found_channels.append(channel_data)
-        # return found_channels
+            db.save_temp_channel(num + (self.page_num - 1) * 50, channel_info['channelTitle'],
+                                 channel_info['publishedAt'], channel_info['channelId'], channel_info['description'],
+                                 channel_info['thumbnails']['default']['url'])
 
     def next_page(self, search_query: str):
         if self.nextPageToken:

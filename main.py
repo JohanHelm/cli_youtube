@@ -20,16 +20,17 @@ def main(stdscr):
 
     # Выбранный пункт меню
     selected_item = 0
-    menu_level = 'Главное меню.'  # Инициализируем переменную
+    menu_level = 'Главное меню.'
     user_input = None
-    search_results = None
+    show_results = 5
     page = 1
+    item_to_show = None
 
     while True:
         menu_win.clear()
         # Вызов give_menu из cli, c с передачей уровня меню и длины строки Параметры менюшки: текст, опции
-        menu_text, menu_text_height, menu_items, menu_options_height, interval, demand_user_input = give_menu(
-            menu_level, menu_width - 10, page)
+        menu_text, menu_text_height, menu_items, menu_options_height, interval, demand_user_input, results_amount = \
+            give_menu(menu_level, menu_width - 10, page, show_results, item_to_show)
 
         vertical_shift_1 = 0  # отступ сверху перед текстом
         horizontal_shift_1 = 3  # отступ слева перед текстом
@@ -64,19 +65,23 @@ def main(stdscr):
         elif key == ord('\n') or key == ord('\r'):
             if selected_item == len(menu_items) - 1:
                 break  # Выход из меню
-            elif menu_level == 'Каналы найдены.':
-                if menu_items[selected_item].startswith('Канал: '):
-                    yt.add_fav_channel(selected_item)
-                elif menu_items[selected_item] == 'Вперёд':
-                    page += 1
-                elif menu_items[selected_item] == 'Назад':
-                    page -= 1
+            elif menu_items[selected_item] == 'Вперёд':
+                page += 1
+            elif menu_items[selected_item] == 'Назад':
+                page -= 1
+            elif menu_items[selected_item].startswith('Назад в '):
+                menu_level = menu_items[selected_item].replace('Назад в ', '')
+                user_input = None
+
+            elif menu_level == 'Каналы найдены.' and selected_item < results_amount:
+                yt.add_fav_channel(selected_item)
+
+            elif menu_level == 'Мои избранные каналы.' and selected_item < results_amount:
+                menu_level = 'Данные канала.'
+                item_to_show = selected_item
 
             else:
                 menu_level = menu_items[selected_item]
-                if menu_level.startswith('Назад в '):
-                    menu_level = menu_level.replace('Назад в ', '')
-                    user_input = None
 
         if demand_user_input and not user_input:
             curses.echo()  # Включить отображение ввода на экране

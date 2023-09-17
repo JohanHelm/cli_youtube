@@ -19,19 +19,12 @@ class VideoSearcher:
                                          maxResults=50, order='date').execute()
         self.nextPageToken = response.get('nextPageToken')
         self.prevPageToken = response.get('prevPageToken')
-
-        found_videos = []
         videos = response['items']
         for num, video in enumerate(videos):
             video_info = video['snippet']
-
-
-            video_data = (video_info['title'], video_info['description'], video_info['channelTitle'],
+            db.add_video(video_info['title'], video_info['description'], video_info['channelTitle'],
                           video_info['publishedAt'], video_info['thumbnails']['default']['url'], video['id']['videoId'],
                           video_info['channelId'])
-            found_videos.append(video_data)
-        return found_videos
-
 
     def next_page(self, search_query: str):
         if self.nextPageToken:
@@ -48,16 +41,13 @@ class VideoSearcher:
             print('больше каналов нет')
 
 
-
 video_search = VideoSearcher(youtube)
 
 
+# channel_id = 'UCIyLQ6cL0eWj1jT6oyy148w'
 
-
-# channel_id = 'UCN3nx9hIzgItJeDb5FFfy0Q'
-#
 # c = video_search.find_channel_videos(channel_id)
-
+# print(c)
 
 # Извлечение информации о найденных видео из ответа API
 # videos = c['items']
@@ -73,4 +63,3 @@ video_search = VideoSearcher(youtube)
 #     print('Видео ID:', video['id']['videoId'])
 #     print('ID канала', video_info['channelId'])
 #     print('-------------------------------------------')
-
