@@ -1,0 +1,1 @@
+This application is command line interface youtube client. It allows to watch videos from youtube without google advertisements and advertising integrations.
