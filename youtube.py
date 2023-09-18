@@ -1,22 +1,25 @@
-# from youtube_api import youtube
+from os import system
 from database import db
 from search_channels import channel_search
 from search_playlists import playlist_search
 from search_videos import video_search
 
 
+
 class YoutubeManager:
 
-    def add_fav_channel(self, selected_item):
+    def add_fav_channel(self, page, show_results, selected_item):
         # Достать id канала
-        channel_info = db.get_channel_from_temp(selected_item)[1:]
+        channel_id = db.show_temp_channels(page, show_results)[0][selected_item][0]
+        channel_info = db.get_channel_from_temp(channel_id)
+        # print(channel_info)
         # добавить канал если его нет
-        if not all(db.check_channel_in_fav(channel_info[2])):
+        if not all(db.check_channel_in_fav(channel_id)):
             db.add_channel(*channel_info)
             # скачать инфу о всех видео канала
-            video_search.find_channel_videos(channel_info[2])
+            video_search.find_channel_videos(channel_id)
             while video_search.nextPageToken:
-                video_search.next_page(channel_info[2])
+                video_search.next_page(channel_id)
 
             # for title, description, author, published_at, thumbnails, video_id, channel_id \
             #         in video_search.find_channel_videos(channel_info[2]):
@@ -36,8 +39,14 @@ class YoutubeManager:
         # while channel_search.nextPageToken:
         #     channel_search.next_page(search_query)
 
+    def playback_video(self, page, show_results, selected_item, channel_id):
+        video_id = db.show_channel_videos(page, show_results, channel_id)[0][selected_item][0]
+        system(f'mpv -fs https://www.youtube.com/watch?v={video_id}')
+
 
 
 yt = YoutubeManager()
 
 # yt.search_channel('python hub studio')
+# yt.add_fav_channel(1, 5, 0)
+# yt.playback(1, 5, 0, 'UCIyLQ6cL0eWj1jT6oyy148w')

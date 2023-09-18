@@ -25,12 +25,13 @@ def main(stdscr):
     show_results = 5
     page = 1
     item_to_show = None
+    channel_id = None
 
     while True:
         menu_win.clear()
         # Вызов give_menu из cli, c с передачей уровня меню и длины строки Параметры менюшки: текст, опции
-        menu_text, menu_text_height, menu_items, menu_options_height, interval, demand_user_input, results_amount = \
-            give_menu(menu_level, menu_width - 10, page, show_results, item_to_show)
+        menu_text, menu_text_height, menu_items, menu_options_height, interval, demand_user_input, results_amount, channel_id = \
+            give_menu(menu_level, menu_width - 10, page, show_results, item_to_show, channel_id)
 
         vertical_shift_1 = 0  # отступ сверху перед текстом
         horizontal_shift_1 = 3  # отступ слева перед текстом
@@ -72,13 +73,14 @@ def main(stdscr):
             elif menu_items[selected_item].startswith('Назад в '):
                 menu_level = menu_items[selected_item].replace('Назад в ', '')
                 user_input = None
-
             elif menu_level == 'Каналы найдены.' and selected_item < results_amount:
-                yt.add_fav_channel(selected_item)
-
+                yt.add_fav_channel(page, show_results, selected_item)
             elif menu_level == 'Мои избранные каналы.' and selected_item < results_amount:
                 menu_level = 'Данные канала.'
                 item_to_show = selected_item
+            elif menu_level == 'Все видео канала' and selected_item < results_amount:
+                item_to_show = selected_item
+                yt.playback_video(page, show_results, selected_item, channel_id)
 
             else:
                 menu_level = menu_items[selected_item]

@@ -22,9 +22,9 @@ class VideoSearcher:
         videos = response['items']
         for num, video in enumerate(videos):
             video_info = video['snippet']
-            db.add_video(video_info['title'], video_info['description'], video_info['channelTitle'],
-                          video_info['publishedAt'], video_info['thumbnails']['default']['url'], video['id']['videoId'],
-                          video_info['channelId'])
+            db.add_video(video['id']['videoId'], video_info['title'], video_info['description'],
+                         video_info['channelTitle'], video_info['publishedAt'],
+                         video_info['thumbnails']['default']['url'], video_info['channelId'])
 
     def next_page(self, search_query: str):
         if self.nextPageToken:

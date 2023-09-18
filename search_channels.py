@@ -23,8 +23,8 @@ class ChannelSearcher:
         channels = response['items']
         for num, channel in enumerate(channels):
             channel_info = channel['snippet']
-            db.save_temp_channel(num + (self.page_num - 1) * 50, channel_info['channelTitle'],
-                                 channel_info['publishedAt'], channel_info['channelId'], channel_info['description'],
+            db.save_temp_channel(channel_info['channelId'], channel_info['channelTitle'],
+                                 channel_info['publishedAt'], channel_info['description'],
                                  channel_info['thumbnails']['default']['url'])
 
     def next_page(self, search_query: str):
