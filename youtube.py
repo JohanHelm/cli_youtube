@@ -5,7 +5,6 @@ from search_playlists import playlist_search
 from search_videos import video_search
 
 
-
 class YoutubeManager:
 
     def add_fav_channel(self, page, show_results, selected_item):
@@ -20,18 +19,13 @@ class YoutubeManager:
             video_search.find_channel_videos(channel_id)
             while video_search.nextPageToken:
                 video_search.next_page(channel_id)
-
-            # for title, description, author, published_at, thumbnails, video_id, channel_id \
-            #         in video_search.find_channel_videos(channel_info[2]):
-            #     db.add_video(title, description, author, published_at, thumbnails, video_id, channel_id)
-
             # Скачать инфу о всех плейлисах канала и добавить в базу
-            # for title, description, thumbnails, playist_id, videos in playlist_search.find_playlists(channel_info[2]):
-            #     db.add_playlist(title, description, thumbnails, playist_id, channel_info[2])
+            playlist_search.find_playlists(channel_id)
+            while playlist_search.pl_nextPageToken:
+                playlist_search.pl_next_page(channel_id)
 
-
-            # print(db.get_channel_from_temp(selected_item))
-            # print(playlist_search.find_playlists(channel_id))
+    def rm_channel(self, channel_id):
+        db.rm_channell(channel_id)
 
     def search_channel(self, search_query):
         db.clear_temp_channel()
@@ -42,7 +36,6 @@ class YoutubeManager:
     def playback_video(self, page, show_results, selected_item, channel_id):
         video_id = db.show_channel_videos(page, show_results, channel_id)[0][selected_item][0]
         system(f'mpv -fs https://www.youtube.com/watch?v={video_id}')
-
 
 
 yt = YoutubeManager()

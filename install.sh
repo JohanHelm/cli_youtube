@@ -4,7 +4,7 @@ apt update
 apt install -y wget mpv ffmpeg yt-dlp git
 ### Cкрипт установки и запуска приложения
 # Укажите в какую директорию вы хотите установить
-your_dir=~/youtube-cli
+your_dir=~/youtube_client
 # Создать каталог
 mkdir $your_dir
 cd $your_dir
@@ -27,11 +27,16 @@ pip install -r ./requirements.txt
 # или отсюда https://fruit.je/apt
 
 # create alias for app
-echo "alias youtube='~/youtube-cli/venv/bin/python main.py'">> ~/.bashrc
+echo "alias youtube-cli='~/youtube_client/venv/bin/python ~/youtube_client/main.py'">> ~/.bashrc
 source ~/.bashrc
 
 
 # paste scripts into ~/.config/mpv/scripts
+
+# resolution
+# https://github.com/jgreco/mpv-youtube-quality
+wget https://github.com/jgreco/mpv-youtube-quality/raw/master/youtube-quality.lua
+
 # sponsoreblock
 # https://github.com/po5/mpv_sponsorblock
 wget https://github.com/po5/mpv_sponsorblock/raw/master/sponsorblock.lua
@@ -40,8 +45,6 @@ cd sponsorblock_shared
 wget https://github.com/po5/mpv_sponsorblock/raw/master/sponsorblock_shared/main.lua
 wget https://github.com/po5/mpv_sponsorblock/raw/master/sponsorblock_shared/sponsorblock.py
 
-# resolution
-# https://github.com/jgreco/mpv-youtube-quality
-wget https://github.com/jgreco/mpv-youtube-quality/raw/master/youtube-quality.lua
+
 
     

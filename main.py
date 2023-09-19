@@ -26,6 +26,7 @@ def main(stdscr):
     page = 1
     item_to_show = None
     channel_id = None
+    playlist_id = None
 
     while True:
         menu_win.clear()
@@ -52,7 +53,7 @@ def main(stdscr):
                     menu_win.addstr(i * interval + j + vertical_shift_2, horizontal_shift_2, line)
 
         menu_win.addstr(menu_height - menu_text_height - menu_options_height - interval, 2,
-                        f"Выбрано: {menu_level} {demand_user_input} {user_input} {menu_height} {menu_width}")
+                        f"Выбрано: {menu_level} {demand_user_input} {user_input} {menu_height} {menu_width} {item_to_show}")
 
         menu_win.refresh()
 
@@ -73,6 +74,9 @@ def main(stdscr):
             elif menu_items[selected_item].startswith('Назад в '):
                 menu_level = menu_items[selected_item].replace('Назад в ', '')
                 user_input = None
+            elif menu_items[selected_item] == 'Удалить из избранного':
+                menu_level = 'Мои избранные каналы.'
+                yt.rm_channel(channel_id)
             elif menu_level == 'Каналы найдены.' and selected_item < results_amount:
                 yt.add_fav_channel(page, show_results, selected_item)
             elif menu_level == 'Мои избранные каналы.' and selected_item < results_amount:
@@ -81,7 +85,6 @@ def main(stdscr):
             elif menu_level == 'Все видео канала' and selected_item < results_amount:
                 item_to_show = selected_item
                 yt.playback_video(page, show_results, selected_item, channel_id)
-
             else:
                 menu_level = menu_items[selected_item]
 

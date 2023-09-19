@@ -60,6 +60,11 @@ def give_menu(level: str, string_lenght: int, page: int, show_results: int, item
         results_amount = len(channel_videos_data)
         menu_items, menu_options_height, interval = chunk_menu_options(
             get_pagination(page, pages, level, channel_videos_data), string_lenght)
+    elif level == 'Все плейлисты канала':
+        channel_playlists, pages = db.show_channel_playlists(page, show_results, channel_id)
+        results_amount = len(channel_playlists)
+        menu_items, menu_options_height, interval = chunk_menu_options(
+            get_pagination(page, pages, level, channel_playlists), string_lenght)
     else:
         menu_items, menu_options_height, interval = chunk_menu_options(menu[level].choices, string_lenght)
     menu_text, menu_text_height = chunk_menu_text(message, string_lenght)
@@ -67,6 +72,6 @@ def give_menu(level: str, string_lenght: int, page: int, show_results: int, item
 
 # chunk_menu_text(menu['Как добавить ключ'].message, 132 - 10)
 # print(chunk_menu_text(menu['Как добавить ключ'].message, 132 - 10))
-# print(give_menu('Мои избранные каналы.', 130, 1, 5 ,0))
+# print(give_menu('Мои избранные каналы.', 130, 1, 5 ,0, None))
 # print(give_menu('Каналы найдены.', 130, 1, 5 ,0))
 # print(menu['Данные канала.'].choices)

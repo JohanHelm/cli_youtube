@@ -1,7 +1,8 @@
 from collections import namedtuple
+
 from api_key import KEY
 
-MenuItem = namedtuple('MenuItem', ('message', 'choices', 'demand_user_input'), defaults=(False, ))
+MenuItem = namedtuple('MenuItem', ('message', 'choices', 'demand_user_input'), defaults=(False,))
 
 main_menu = MenuItem('Привет, это консольный клиент для видеохостинга YOUTUBE',
                      ('Найти видео.', 'Найти канал.', 'Мои избранные каналы.', 'YOUTUBE API KEY', 'Выход'))
@@ -42,6 +43,9 @@ channel_data = MenuItem('', ('Удалить из избранного', 'Все
 channel_videos = MenuItem('Чтобы начать воспроизведение видео выберите его и нажмите enter',
                           ('Назад в Данные канала.', 'Выход'))
 
+channel_playlists = MenuItem('Чтобы ознакомиться с содержимым плейлиста выберите его и нажмите enter',
+                             ('Назад в Мои избранные каналы.', 'Выход'))
+
 menu = {'Главное меню.': main_menu,
         'Найти видео.': find_video,
         'Найти канал.': find_channel,
@@ -51,4 +55,6 @@ menu = {'Главное меню.': main_menu,
         'Как добавить ключ.': how_to_add_api_key,
         'Каналы найдены.': found_channes,
         'Данные канала.': channel_data,
-        'Все видео канала': channel_videos}
+        'Все видео канала': channel_videos,
+        'Все плейлисты канала': channel_playlists
+        }
