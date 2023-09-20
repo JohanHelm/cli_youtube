@@ -31,14 +31,14 @@ class VideoSearcher:
             self.page_num += 1
             self.find_channel_videos(search_query, self.nextPageToken)
         else:
-            print('больше каналов нет')
+            print('No more videos.')
 
     def prev_page(self, search_query: str):
         if self.prevPageToken:
             self.page_num -= 1
             self.find_channel_videos(search_query, self.prevPageToken)
         else:
-            print('больше каналов нет')
+            print('No more videos.')
 
 
 video_search = VideoSearcher(youtube)

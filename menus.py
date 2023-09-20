@@ -4,57 +4,61 @@ from api_key import KEY
 
 MenuItem = namedtuple('MenuItem', ('message', 'choices', 'demand_user_input'), defaults=(False,))
 
-main_menu = MenuItem('Привет, это консольный клиент для видеохостинга YOUTUBE',
-                     ('Найти видео.', 'Найти канал.', 'Мои избранные каналы.', 'YOUTUBE API KEY', 'Выход'))
+main_menu = MenuItem('Hi, this is YOUTUBE command line client.',
+                     ('Find video.', 'Find channel.', 'My favorites.', 'YOUTUBE API KEY.', 'Exit.'))
 
-find_video = MenuItem('Введите название видео', ('Назад в Главное меню.', 'Выход'), True)
+find_video = MenuItem('Type video title.', ('Back to Main menu.', 'Exit.'), True)
 
-find_channel = MenuItem('Введите название канала', ('Назад в Главное меню.', 'Выход'), True)
+find_channel = MenuItem('Type channel title.', ('Back to Main menu.', 'Exit.'), True)
 
-my_favorite = MenuItem('Мои избранные каналы.', ('Назад в Главное меню.', 'Выход'))
+my_favorite = MenuItem('My favorite channels.', ('Back to Main menu.', 'Exit.'))
 
-youtube_api_key = MenuItem('Для работы клиенту необходим ключ YouTube API',
-                           ('Добавить ключ.', 'Как добавить ключ.', 'Назад в Главное меню.', 'Выход'))
+youtube_api_key = MenuItem('This application needs YouTube API key.',
+                           ('Add YouTube API key.', 'How to add YouTube API key.', 'Back to Main menu.', 'Exit.'))
 
-add_api_key = MenuItem(f'Скопируйте ваш youtube api ключ. Перед вставкой ключа нажмите enter на клавиатуре. '
-                       f'Вставьте ключ нажав комбинацию клавиш ctr+C+V и затем enter. '
-                       f'Обязательно проверьте что ключ совпадает.'
-                       f'Если не хотите менять ваш ключ оставьте поле ввода пустым и нажмите enter. '
-                       f'Ваш youtube api ключ: {KEY}', ('Назад в YOUTUBE API KEY', 'Выход'), True)
+add_api_key = MenuItem(f'1. Copy your YouTube API key.\n'
+                       f'2. Press Enter before pasting the key.\n'
+                       f'3. Paste the key using Ctrl+C+V, then press Enter.\n'
+                       f'4. Ensure that the key matches.\n'
+                       f"5. If you don't want to change your key, leave the input field empty and press Enter.\n"
+                       f'Your youtube api key: {KEY}', ('Back to YOUTUBE API KEY.', 'Exit.'), True)
 
-how_to_get_api_key_msg = f'1. Авторизуйтесь в вашем аккаунте google.\n' \
-                         '2. Перейдите в Google Cloud Console: https://console.developers.google.com/\n' \
-                         '3. Создайте проект, если его еще нет.\n' \
-                         '4. В разделе "API и сервисы" выберите "Учетные данные".\n' \
-                         '5. Нажмите "Создать учетные данные" и выберите "ID клиента OAuth".\n' \
-                         '6. Выберите тип приложения "Другое" или "Веб-приложение".\n' \
-                         '7. После создания клиентского ID, скачайте JSON-файл с учетными данными,\n' \
-                         'который будет содержать поля api_key client_id и client_secret.\n' \
-                         'Для работы данного youtube клиента вам потребуется api_key'
+how_to_get_api_key_msg = f'1. Go to https://console.developers.google.com/\n ' \
+                         f'2. Create a new project or select an existing one.\n ' \
+                         f'3. In the left navigation menu, select "APIs & Services" > "Library."\n ' \
+                         f'4. Find and enable the "YouTube Data API v3."\n ' \
+                         f'5. In the left navigation menu, select "APIs & Services" > "Credentials."\n ' \
+                         f'6. Click on "Create Credentials" and choose the credential type that suits your ' \
+                         f'application\n ' \
+                         f'(e.g., OAuth 2.0 Client ID for a web application).\n ' \
+                         f'7. Follow the on-screen instructions to complete the credentials creation process.\n ' \
+                         f'8. click "Download" next to the credentials to obtain a JSON file containing the ' \
+                         f'credentials.\n ' \
+                         f'9. This application demand api_key'
 
-how_to_add_api_key = MenuItem(how_to_get_api_key_msg, ('Назад в YOUTUBE API KEY', 'Выход'))
+how_to_add_api_key = MenuItem(how_to_get_api_key_msg, ('Back to YOUTUBE API KEY.', 'Exit.'))
 
-found_channes = MenuItem('Чтобы добавить канал в избранное выберите его и нажмите enter',
-                         ('Назад в Главное меню.', 'Выход'))
+found_channes = MenuItem('Choose channel and press enter to add it in favorites.',
+                         ('Back to Main menu.', 'Exit.'))
 
-channel_data = MenuItem('', ('Удалить из избранного', 'Все видео канала', 'Все плейлисты канала',
-                             'Назад в Мои избранные каналы.', 'Выход'))
+channel_data = MenuItem('', ('Remove from favorites.', 'Videos.', 'Playlists.',
+                             'Back to My favorites.', 'Exit.'))
 
-channel_videos = MenuItem('Чтобы начать воспроизведение видео выберите его и нажмите enter',
-                          ('Назад в Данные канала.', 'Выход'))
+channel_videos = MenuItem('Choose video and press enter for playback.',
+                          ('Back to Chanel data.', 'Exit.'))
 
-channel_playlists = MenuItem('Чтобы ознакомиться с содержимым плейлиста выберите его и нажмите enter',
-                             ('Назад в Мои избранные каналы.', 'Выход'))
+channel_playlists = MenuItem('Chose playlist and press enter to open playlist summary.',
+                             ('Back to Chanel data.', 'Exit.'))
 
-menu = {'Главное меню.': main_menu,
-        'Найти видео.': find_video,
-        'Найти канал.': find_channel,
-        'Мои избранные каналы.': my_favorite,
-        'YOUTUBE API KEY': youtube_api_key,
-        'Добавить ключ.': add_api_key,
-        'Как добавить ключ.': how_to_add_api_key,
-        'Каналы найдены.': found_channes,
-        'Данные канала.': channel_data,
-        'Все видео канала': channel_videos,
-        'Все плейлисты канала': channel_playlists
+menu = {'Main menu.': main_menu,
+        'Find video.': find_video,
+        'Find channel.': find_channel,
+        'My favorites.': my_favorite,
+        'YOUTUBE API KEY.': youtube_api_key,
+        'Add YouTube API key.': add_api_key,
+        'How to add YouTube API key.': how_to_add_api_key,
+        'Found channels.': found_channes,
+        'Channel data.': channel_data,
+        'Videos.': channel_videos,
+        'Playlists.': channel_playlists
         }

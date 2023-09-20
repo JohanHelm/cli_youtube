@@ -1,4 +1,10 @@
-This application is command line interface youtube client. It allows to watch videos from youtube without google advertisements and advertising integrations.
+This is a command-line interface YouTube client application.
+It enables ad-free YouTube video viewing by bypassing Google ads and integrated advertising.
+
+To use this application, you'll need a Google Application API key.
+
+It utilizes the MPV media player for playing YouTube videos and shorts.
+
 
 INSTALLATION
 1. paste install.sh at your device home directory

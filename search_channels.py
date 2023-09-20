@@ -32,14 +32,14 @@ class ChannelSearcher:
             self.page_num += 1
             self.find_channel(search_query, self.nextPageToken)
         else:
-            print('больше каналов нет')
+            print('No more channels.')
 
     def prev_page(self, search_query: str):
         if self.prevPageToken:
             self.page_num -= 1
             self.find_channel(search_query, self.prevPageToken)
         else:
-            print('больше каналов нет')
+            print('No more channels.')
 
 
 # Выполнение запроса к API для поиска канала по имени

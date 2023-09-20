@@ -36,14 +36,14 @@ class PaylistsSearcher:
             self.pl_page_num += 1
             self.find_playlists(channel_id, self.pl_nextPageToken)
         else:
-            print('больше каналов нет')
+            print('No more playlists.')
 
     def pl_prev_page(self, channel_id: str):
         if self.pl_prevPageToken:
             self.pl_page_num -= 1
             self.find_playlists(channel_id, self.pl_prevPageToken)
         else:
-            print('больше каналов нет')
+            print('No more playlists.')
 
     def find_pl_videos(self, playlist_id, page_token: str = None):
         response = youtube.playlistItems().list(part=self.part, playlistId=playlist_id, maxResults=50,
@@ -58,14 +58,14 @@ class PaylistsSearcher:
             self.vi_page_num += 1
             self.find_pl_videos(playlist_id, self.vi_nextPageToken)
         else:
-            print('больше каналов нет')
+            print('No more videos.')
 
     def vi_prev_page(self, playlist_id: str):
         if self.vi_prevPageToken:
             self.vi_page_num -= 1
             self.find_pl_videos(playlist_id, self.vi_prevPageToken)
         else:
-            print('больше каналов нет')
+            print('No more videos.')
 
 
 playlist_search = PaylistsSearcher(youtube)
