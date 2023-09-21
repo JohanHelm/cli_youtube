@@ -1,22 +1,21 @@
 #!/bin/bash
 
-apt update
-apt install -y wget mpv ffmpeg yt-dlp git
+apt update && apt install -y wget mpv ffmpeg yt-dlp git
 ### Cкрипт установки и запуска приложения
 # Укажите в какую директорию вы хотите установить
-your_dir=~/youtube_client
+your_dir=$HOME/youtube_client
 # Создать каталог
-mkdir $your_dir
-cd $your_dir
+mkdir $HOME/youtube_client
+cd $HOME/youtube_client
 # Установить венв
 apt install -y python3-venv
 python3 -m venv venv
 # Запустить венв
-source $your_dir/venv/bin/activate
+source $HOME/youtube_client/venv/bin/activate
 # Установить pip
-wget https://bootstrap.pypa.io/get-pip.py
-python3 get-pip.py
-rm get-pip.py
+# wget https://bootstrap.pypa.io/get-pip.py
+# python3 get-pip.py
+# rm get-pip.py
 
 git clone https://github.com/JohanHelm/cli_youtube.git
 
@@ -27,8 +26,8 @@ pip install -r ./requirements.txt
 # или отсюда https://fruit.je/apt
 
 # create alias for app
-echo "alias youtube-cli='~/youtube_client/venv/bin/python ~/youtube_client/main.py'">> ~/.bashrc
-source ~/.bashrc
+echo "alias youtube-cli='$HOME/youtube_client/venv/bin/python $HOME/youtube_client/main.py'">> $HOME/.bashrc
+source $HOME/.bashrc
 
 
 # paste scripts into ~/.config/mpv/scripts

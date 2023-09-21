@@ -1,5 +1,6 @@
 from menus import menu
 from database import db
+from settings import settings
 
 
 def chunk_menu_text(text: str, lenght: int) -> tuple:
@@ -15,15 +16,14 @@ def chunk_menu_text(text: str, lenght: int) -> tuple:
 
 
 def chunk_menu_options(items: tuple | list, lenght: int) -> tuple:
-    subinterval = 0
     item_height = 0
     items = list(items)
     for i, option in enumerate(items):
         items[i] = chunk_menu_text(option, lenght)[0]
         if len(items[i].split('\n')) > item_height:
             item_height = len(items[i].split('\n'))
-    interval = item_height + subinterval  # интервал между опциями меню
-    menu_options_height = len(items) * interval - subinterval  # Общая высота вариантов менюшки
+    interval = item_height + settings.SUBINTERVAL  # интервал между опциями меню
+    menu_options_height = len(items) * interval - settings.SUBINTERVAL  # Общая высота вариантов менюшки
     return tuple(items), menu_options_height, interval
 
 

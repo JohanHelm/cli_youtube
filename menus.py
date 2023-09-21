@@ -45,10 +45,10 @@ channel_data = MenuItem('', ('Remove from favorites.', 'Videos.', 'Playlists.',
                              'Back to My favorites.', 'Exit.'))
 
 channel_videos = MenuItem('Choose video and press enter for playback.',
-                          ('Back to Chanel data.', 'Exit.'))
+                          ('Back to Channel data.', 'Exit.'))
 
 channel_playlists = MenuItem('Chose playlist and press enter to open playlist summary.',
-                             ('Back to Chanel data.', 'Exit.'))
+                             ('Back to Channel data.', 'Exit.'))
 
 menu = {'Main menu.': main_menu,
         'Find video.': find_video,

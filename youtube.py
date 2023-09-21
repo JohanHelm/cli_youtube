@@ -25,7 +25,7 @@ class YoutubeManager:
                 playlist_search.pl_next_page(channel_id)
 
     def rm_channel(self, channel_id):
-        db.rm_channell(channel_id)
+        db.rm_channel(channel_id)
 
     def search_channel(self, search_query):
         db.clear_temp_channel()
