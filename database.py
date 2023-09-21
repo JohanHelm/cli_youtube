@@ -93,6 +93,6 @@ class Database:
 db = Database(f'{expanduser("~")}/youtube_client/my_favorites.db')
 # print([' '.join(i) for i in db.show_temp_channels()])
 # print(db.check_channel_in_fav('UCN3nx9hIzgItJeDb5FFfy0Q'))
-# print(db.show_my_channels(2, 5))
-# db.rm_channel('UCIyLQ6cL0eWj1jT6oyy148w')
+# print(db.show_my_channels(1, 5))
+# db.rm_channel('UCIyLQ6cL0eWj1jT6 oyy148w')
 

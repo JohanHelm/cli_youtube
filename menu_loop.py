@@ -2,9 +2,9 @@ import curses
 
 from cli import give_menu
 from globals import gp
+from settings import settings
 from user_input import input_hendler
 from youtube import yt
-from settings import settings
 
 
 class CliMenuLoop:
@@ -38,13 +38,13 @@ class CliMenuLoop:
                 lines = item.split('\n')  # Разделяем многострочный текст на строки
                 for j, line in enumerate(lines):
                     if i == gp.SELECTED_ITEM:
-                        menu_win.addstr(i * interval + j + vertical_shift_2, settings.HORIZONTAL_SHIFT_2, line, curses.A_REVERSE)
+                        menu_win.addstr(i * interval + j + vertical_shift_2, settings.HORIZONTAL_SHIFT_2, line,
+                                        curses.A_REVERSE)
                     else:
                         menu_win.addstr(i * interval + j + vertical_shift_2, settings.HORIZONTAL_SHIFT_2, line)
 
             menu_win.addstr(menu_height - menu_text_height - menu_options_height - interval, 2,
-                            f"Status log: {gp.MENU_LEVEL} {demand_user_input} {gp.USER_INPUT} {menu_height} "
-                            f"{menu_width} {gp.ITEM_TO_SHOW}")
+                            f"Status log: {menu_items}")
 
             menu_win.refresh()
 
@@ -65,6 +65,7 @@ class CliMenuLoop:
                 elif menu_items[gp.SELECTED_ITEM].startswith('Back to '):
                     gp.MENU_LEVEL = menu_items[gp.SELECTED_ITEM].replace('Back to ', '')
                     gp.USER_INPUT = None
+                    gp.PAGE = 1
                 elif menu_items[gp.SELECTED_ITEM] == 'Remove from favorites.':
                     gp.MENU_LEVEL = 'My favorites.'
                     yt.rm_channel(gp.CHANNEL_ID)

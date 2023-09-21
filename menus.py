@@ -50,7 +50,7 @@ channel_videos = MenuItem('Choose video and press enter for playback.',
 channel_playlists = MenuItem('Chose playlist and press enter to open playlist summary.',
                              ('Back to Channel data.', 'Exit.'))
 
-menu = {'Main menu.': main_menu,
+menus = {'Main menu.': main_menu,
         'Find video.': find_video,
         'Find channel.': find_channel,
         'My favorites.': my_favorite,
