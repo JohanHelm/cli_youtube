@@ -59,6 +59,7 @@ class Database:
         with self.connection:
             self.cursor.execute("DELETE FROM channels WHERE channel_id = ?", (channel_id,))
             self.cursor.execute("DELETE FROM videos WHERE channel_id = ?", (channel_id,))
+            self.cursor.execute("DELETE FROM playlists WHERE channel_id = ?", (channel_id,))
 
     def add_playlist(self, playist_id, title, published_at, description, thumbnails, channel_id):
         with self.connection:
@@ -91,8 +92,3 @@ class Database:
 
 
 db = Database(f'{expanduser("~")}/youtube_client/my_favorites.db')
-# print([' '.join(i) for i in db.show_temp_channels()])
-# print(db.check_channel_in_fav('UCN3nx9hIzgItJeDb5FFfy0Q'))
-# print(db.show_my_channels(1, 5))
-# db.rm_channel('UCIyLQ6cL0eWj1jT6 oyy148w')
-

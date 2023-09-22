@@ -9,6 +9,7 @@ class GlobalParameters:
         self.CHANNEL_ID: str = ''
         self.PLAYLIST_ID: str = ''
         self.STATUS_MESSAGE: str = ''
+        self.RESULTS_AMOUNT: int = 0
 
 
 gp = GlobalParameters()

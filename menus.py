@@ -1,17 +1,105 @@
 from collections import namedtuple
 
 from api_key import KEY
+from database import db
+from globals import gp
+from youtube import yt
 
-MenuItem = namedtuple('MenuItem', ('message', 'choices', 'demand_user_input'), defaults=(False,))
+
+def pagination(pages, responce_data):
+    gp.RESULTS_AMOUNT = len(responce_data)
+    result = [' '.join(i[1:]) for i in responce_data]
+    if gp.PAGE < pages:
+        result.append('Forward.')
+    if gp.PAGE > 1:
+        result.append('Back.')
+    return result
+
+
+def options_my_favorite():
+    my_channels_data, pages = db.show_my_channels(gp.PAGE, gp.SHOW_RESULTS)
+    options = pagination(pages, my_channels_data)
+    options.extend(['Back to Main menu.', 'Exit.'])
+    return options
+
+
+def options_found_channels():
+    found_channels_data, pages = db.show_temp_channels(gp.PAGE, gp.SHOW_RESULTS)
+    options = pagination(pages, found_channels_data)
+    options.extend(['Back to Main menu.', 'Exit.'])
+    return options
+
+
+def options_channel_videos():
+    channel_videos_data, pages = db.show_channel_videos(gp.PAGE, gp.SHOW_RESULTS, gp.CHANNEL_ID)
+    options = pagination(pages, channel_videos_data)
+    options.extend(['Back to Channel data.', 'Exit.'])
+    return options
+
+
+def option_channel_playlists():
+    playlists_data, pages = db.show_channel_playlists(gp.PAGE, gp.SHOW_RESULTS, gp.CHANNEL_ID)
+    options = pagination(pages, playlists_data)
+    options.extend(['Back to Channel data.', 'Exit.'])
+    return options
+
+
+def channel_data_text():
+    gp.CHANNEL_ID, *chosen_channel_data = db.show_my_channels(gp.PAGE, gp.SHOW_RESULTS)[0][gp.ITEM_TO_SHOW]
+    return ' '.join(chosen_channel_data)
+
+
+def common_handler(menu_items):
+    if menu_items[gp.SELECTED_ITEM] == 'Forward.':
+        gp.PAGE += 1
+    elif menu_items[gp.SELECTED_ITEM] == 'Back.':
+        gp.PAGE -= 1
+    elif menu_items[gp.SELECTED_ITEM].startswith('Back to '):
+        gp.MENU_LEVEL = menu_items[gp.SELECTED_ITEM].replace('Back to ', '')
+        gp.USER_INPUT = None
+        gp.PAGE = 1
+    elif menu_items[gp.SELECTED_ITEM] == 'Remove from favorites.':
+        gp.MENU_LEVEL = 'My favorites.'
+        yt.rm_channel(gp.CHANNEL_ID)
+    else:
+        gp.MENU_LEVEL = menu_items[gp.SELECTED_ITEM]
+
+
+def add_channel(menu_items):
+    if gp.SELECTED_ITEM < gp.RESULTS_AMOUNT:
+        yt.add_fav_channel(gp.PAGE, gp.SHOW_RESULTS, gp.SELECTED_ITEM)
+    else:
+        common_handler(menu_items)
+
+
+def show_channel(menu_items):
+    if gp.SELECTED_ITEM < gp.RESULTS_AMOUNT:
+        gp.MENU_LEVEL = 'Channel data.'
+        gp.ITEM_TO_SHOW = gp.SELECTED_ITEM
+    else:
+        common_handler(menu_items)
+
+
+def playback_video(menu_items):
+    if gp.SELECTED_ITEM < gp.RESULTS_AMOUNT:
+        gp.ITEM_TO_SHOW = gp.SELECTED_ITEM
+        yt.playback_video(gp.PAGE, gp.SHOW_RESULTS, gp.SELECTED_ITEM, gp.CHANNEL_ID)
+    else:
+        common_handler(menu_items)
+
+
+
+MenuItem = namedtuple('MenuItem', ('message', 'choices', 'choice_handler', 'demand_user_input'),
+                      defaults=(common_handler, False))
 
 main_menu = MenuItem('Hi, this is YOUTUBE command line client.',
                      ('Find video.', 'Find channel.', 'My favorites.', 'YOUTUBE API KEY.', 'Exit.'))
 
-find_video = MenuItem('Type video title.', ('Back to Main menu.', 'Exit.'), True)
+find_video = MenuItem('Type video title.', ('Back to Main menu.', 'Exit.'), common_handler, True)
 
-find_channel = MenuItem('Type channel title.', ('Back to Main menu.', 'Exit.'), True)
+find_channel = MenuItem('Type channel title.', ('Back to Main menu.', 'Exit.'), common_handler, True)
 
-my_favorite = MenuItem('My favorite channels.', ('Back to Main menu.', 'Exit.'))
+my_favorite = MenuItem('My favorite channels.', options_my_favorite, )
 
 youtube_api_key = MenuItem('This application needs YouTube API key.',
                            ('Add YouTube API key.', 'How to add YouTube API key.', 'Back to Main menu.', 'Exit.'))
@@ -21,7 +109,7 @@ add_api_key = MenuItem(f'1. Copy your YouTube API key.\n'
                        f'3. Paste the key using Ctrl+C+V, then press Enter.\n'
                        f'4. Ensure that the key matches.\n'
                        f"5. If you don't want to change your key, leave the input field empty and press Enter.\n"
-                       f'Your youtube api key: {KEY}', ('Back to YOUTUBE API KEY.', 'Exit.'), True)
+                       f'Your youtube api key: {KEY}', ('Back to YOUTUBE API KEY.', 'Exit.'), common_handler, True)
 
 how_to_get_api_key_msg = f'1. Go to https://console.developers.google.com/\n ' \
                          f'2. Create a new project or select an existing one.\n ' \
@@ -38,27 +126,26 @@ how_to_get_api_key_msg = f'1. Go to https://console.developers.google.com/\n ' \
 
 how_to_add_api_key = MenuItem(how_to_get_api_key_msg, ('Back to YOUTUBE API KEY.', 'Exit.'))
 
-found_channes = MenuItem('Choose channel and press enter to add it in favorites.',
-                         ('Back to Main menu.', 'Exit.'))
+found_channels = MenuItem('Choose channel and press enter to add it in favorites.', options_found_channels, add_channel)
 
-channel_data = MenuItem('', ('Remove from favorites.', 'Videos.', 'Playlists.',
-                             'Back to My favorites.', 'Exit.'))
+channel_data = MenuItem(channel_data_text, ('Remove from favorites.', 'Videos.', 'Playlists.',
+                                            'Back to My favorites.', 'Exit.'))
 
-channel_videos = MenuItem('Choose video and press enter for playback.',
-                          ('Back to Channel data.', 'Exit.'))
+channel_videos = MenuItem('Choose video and press enter for playback.', options_channel_videos, playback_video)
 
-channel_playlists = MenuItem('Chose playlist and press enter to open playlist summary.',
-                             ('Back to Channel data.', 'Exit.'))
+channel_playlists = MenuItem('Chose playlist and press enter to open playlist summary.', option_channel_playlists)
 
 menus = {'Main menu.': main_menu,
-        'Find video.': find_video,
-        'Find channel.': find_channel,
-        'My favorites.': my_favorite,
-        'YOUTUBE API KEY.': youtube_api_key,
-        'Add YouTube API key.': add_api_key,
-        'How to add YouTube API key.': how_to_add_api_key,
-        'Found channels.': found_channes,
-        'Channel data.': channel_data,
-        'Videos.': channel_videos,
-        'Playlists.': channel_playlists
-        }
+         'Find video.': find_video,
+         'Find channel.': find_channel,
+         'My favorites.': my_favorite,
+         'YOUTUBE API KEY.': youtube_api_key,
+         'Add YouTube API key.': add_api_key,
+         'How to add YouTube API key.': how_to_add_api_key,
+         'Found channels.': found_channels,
+         'Channel data.': channel_data,
+         'Videos.': channel_videos,
+         'Playlists.': channel_playlists
+         }
+
+# menus['Main menu.'].choice_handler('ghj')
