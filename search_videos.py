@@ -42,24 +42,3 @@ class VideoSearcher:
 
 
 video_search = VideoSearcher(youtube)
-
-
-# channel_id = 'UCIyLQ6cL0eWj1jT6oyy148w'
-
-# c = video_search.find_channel_videos(channel_id)
-# print(c)
-
-# Извлечение информации о найденных видео из ответа API
-# videos = c['items']
-# for video in videos:
-#     print(video)
-#     print('--------------')
-#     video_info = video['snippet']
-#     print('Заголовок видео:', video_info['title'])
-#     print('Описание видео:', video_info['description'])
-#     print('Автор видео:', video_info['channelTitle'])
-#     print('Опубликовано:', video_info['publishedAt'])
-#     print('Картинка:', video_info['thumbnails']['default']['url'])
-#     print('Видео ID:', video['id']['videoId'])
-#     print('ID канала', video_info['channelId'])
-#     print('-------------------------------------------')

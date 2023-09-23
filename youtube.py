@@ -1,7 +1,6 @@
 from os import system
 from database import db
 from search_channels import channel_search
-from search_playlists import playlist_search
 from search_videos import video_search
 
 
@@ -19,10 +18,10 @@ class YoutubeManager:
             video_search.find_channel_videos(channel_id)
             while video_search.nextPageToken:
                 video_search.next_page(channel_id)
-            # Скачать инфу о всех плейлисах канала и добавить в базу
-            playlist_search.find_playlists(channel_id)
-            while playlist_search.pl_nextPageToken:
-                playlist_search.pl_next_page(channel_id)
+            # # Скачать инфу о всех плейлисах канала и добавить в базу
+            # playlist_search.find_playlists(channel_id)
+            # while playlist_search.pl_nextPageToken:
+            #     playlist_search.pl_next_page(channel_id)
 
     def rm_channel(self, channel_id):
         db.rm_channel(channel_id)

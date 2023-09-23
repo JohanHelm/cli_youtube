@@ -5,7 +5,6 @@ from globals import gp
 from settings import settings
 from user_input import input_handler
 from menus import menus
-from youtube import yt
 
 
 class CliMenuLoop:
@@ -44,7 +43,7 @@ class CliMenuLoop:
                         menu_win.addstr(i * interval + j + vertical_shift_2, settings.HORIZONTAL_SHIFT_2, line)
 
             menu_win.addstr(menu_height - menu_text_height - menu_options_height - interval, 2,
-                            f"Status log: {gp.MENU_LEVEL} {demand_user_input} {gp.USER_INPUT}")
+                            f"Status log: {gp.MENU_LEVEL} {gp.PAGE} {gp.SHOW_RESULTS} {gp.CHANNEL_ID} ")
 
             menu_win.refresh()
 
@@ -60,30 +59,6 @@ class CliMenuLoop:
                     break  # Quit
                 else:
                     menus[gp.MENU_LEVEL].choice_handler(menu_items)
-
-                # elif menu_items[gp.SELECTED_ITEM] == 'Forward.':
-                #     gp.PAGE += 1
-                # elif menu_items[gp.SELECTED_ITEM] == 'Back.':
-                #     gp.PAGE -= 1
-                # elif menu_items[gp.SELECTED_ITEM].startswith('Back to '):
-                #     gp.MENU_LEVEL = menu_items[gp.SELECTED_ITEM].replace('Back to ', '')
-                #     gp.USER_INPUT = None
-                #     gp.PAGE = 1
-                # elif menu_items[gp.SELECTED_ITEM] == 'Remove from favorites.':
-                #     gp.MENU_LEVEL = 'My favorites.'
-                #     yt.rm_channel(gp.CHANNEL_ID)
-                #
-                #
-                # elif gp.MENU_LEVEL == 'Found channels.' and gp.SELECTED_ITEM < gp.RESULTS_AMOUNT:
-                #     yt.add_fav_channel(gp.PAGE, gp.SHOW_RESULTS, gp.SELECTED_ITEM)
-                # elif gp.MENU_LEVEL == 'My favorites.' and gp.SELECTED_ITEM < gp.RESULTS_AMOUNT:
-                #     gp.MENU_LEVEL = 'Channel data.'
-                #     gp.ITEM_TO_SHOW = gp.SELECTED_ITEM
-                # elif gp.MENU_LEVEL == 'Videos.' and gp.SELECTED_ITEM < gp.RESULTS_AMOUNT:
-                #     gp.ITEM_TO_SHOW = gp.SELECTED_ITEM
-                #     yt.playback_video(gp.PAGE, gp.SHOW_RESULTS, gp.SELECTED_ITEM, gp.CHANNEL_ID)
-                # else:
-                #     gp.MENU_LEVEL = menu_items[gp.SELECTED_ITEM]
 
             if demand_user_input and not gp.USER_INPUT:
                 curses.echo()  # Включить отображение ввода на экране

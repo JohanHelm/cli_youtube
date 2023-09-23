@@ -37,13 +37,6 @@ def options_channel_videos():
     return options
 
 
-def option_channel_playlists():
-    playlists_data, pages = db.show_channel_playlists(gp.PAGE, gp.SHOW_RESULTS, gp.CHANNEL_ID)
-    options = pagination(pages, playlists_data)
-    options.extend(['Back to Channel data.', 'Exit.'])
-    return options
-
-
 def channel_data_text():
     gp.CHANNEL_ID, *chosen_channel_data = db.show_my_channels(gp.PAGE, gp.SHOW_RESULTS)[0][gp.ITEM_TO_SHOW]
     return ' '.join(chosen_channel_data)
@@ -88,18 +81,17 @@ def playback_video(menu_items):
         common_handler(menu_items)
 
 
-
 MenuItem = namedtuple('MenuItem', ('message', 'choices', 'choice_handler', 'demand_user_input'),
                       defaults=(common_handler, False))
 
 main_menu = MenuItem('Hi, this is YOUTUBE command line client.',
-                     ('Find video.', 'Find channel.', 'My favorites.', 'YOUTUBE API KEY.', 'Exit.'))
+                     ('Find video.', 'Find channel.', 'My favorites.', 'YOUTUBE API KEY.', 'Check updates.', 'Exit.'))
 
 find_video = MenuItem('Type video title.', ('Back to Main menu.', 'Exit.'), common_handler, True)
 
 find_channel = MenuItem('Type channel title.', ('Back to Main menu.', 'Exit.'), common_handler, True)
 
-my_favorite = MenuItem('My favorite channels.', options_my_favorite, )
+my_favorite = MenuItem('My favorite channels.', options_my_favorite, show_channel)
 
 youtube_api_key = MenuItem('This application needs YouTube API key.',
                            ('Add YouTube API key.', 'How to add YouTube API key.', 'Back to Main menu.', 'Exit.'))
@@ -128,24 +120,21 @@ how_to_add_api_key = MenuItem(how_to_get_api_key_msg, ('Back to YOUTUBE API KEY.
 
 found_channels = MenuItem('Choose channel and press enter to add it in favorites.', options_found_channels, add_channel)
 
-channel_data = MenuItem(channel_data_text, ('Remove from favorites.', 'Videos.', 'Playlists.',
-                                            'Back to My favorites.', 'Exit.'))
+channel_data = MenuItem(channel_data_text, ('Remove from favorites.', 'Videos.', 'Back to My favorites.', 'Exit.'))
 
 channel_videos = MenuItem('Choose video and press enter for playback.', options_channel_videos, playback_video)
 
-channel_playlists = MenuItem('Chose playlist and press enter to open playlist summary.', option_channel_playlists)
+check_updates = MenuItem(f'Current version {gp.VERSION}', ('Check for updates.', 'Back to Main menu.', 'Exit.'))
 
 menus = {'Main menu.': main_menu,
          'Find video.': find_video,
          'Find channel.': find_channel,
          'My favorites.': my_favorite,
          'YOUTUBE API KEY.': youtube_api_key,
+         'Check updates.': check_updates,
          'Add YouTube API key.': add_api_key,
          'How to add YouTube API key.': how_to_add_api_key,
          'Found channels.': found_channels,
          'Channel data.': channel_data,
          'Videos.': channel_videos,
-         'Playlists.': channel_playlists
          }
-
-# menus['Main menu.'].choice_handler('ghj')
