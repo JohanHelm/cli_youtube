@@ -5,7 +5,7 @@ from globals import gp
 from settings import settings
 from user_input import input_handler
 from menus import menus
-
+from pympler import asizeof
 
 class CliMenuLoop:
     def create_menu(self, stdscr):
@@ -43,7 +43,7 @@ class CliMenuLoop:
                         menu_win.addstr(i * interval + j + vertical_shift_2, settings.HORIZONTAL_SHIFT_2, line)
 
             menu_win.addstr(menu_height - menu_text_height - menu_options_height - interval, 2,
-                            f"Status log: {gp.MENU_LEVEL} {gp.PAGE} {gp.SHOW_RESULTS} {gp.CHANNEL_ID} ")
+                            f"Status log: {gp.MENU_LEVEL} {gp.PAGE} {gp.SHOW_RESULTS} {gp.RESULTS_AMOUNT} {gp.SELECTED_ITEM}")
 
             menu_win.refresh()
 
@@ -71,3 +71,4 @@ class CliMenuLoop:
 
 
 create_menu_loop = CliMenuLoop()
+# print(asizeof.asizeof(create_menu_loop))

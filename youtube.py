@@ -18,10 +18,6 @@ class YoutubeManager:
             video_search.find_channel_videos(channel_id)
             while video_search.nextPageToken:
                 video_search.next_page(channel_id)
-            # # Скачать инфу о всех плейлисах канала и добавить в базу
-            # playlist_search.find_playlists(channel_id)
-            # while playlist_search.pl_nextPageToken:
-            #     playlist_search.pl_next_page(channel_id)
 
     def rm_channel(self, channel_id):
         db.rm_channel(channel_id)
@@ -36,9 +32,11 @@ class YoutubeManager:
         video_id = db.show_channel_videos(page, show_results, channel_id)[0][selected_item][0]
         system(f'mpv -fs https://www.youtube.com/watch?v={video_id}')
 
+    def update_channel_videos(self, channel_id):
+        video_search.update_channel_videos(channel_id)
+        while video_search.nextPageToken:
+            video_search.next_page(channel_id)
+
+
 
 yt = YoutubeManager()
-
-# yt.search_channel('python hub studio')
-# yt.add_fav_channel(1, 5, 0)
-# yt.playback(1, 5, 0, 'UCIyLQ6cL0eWj1jT6oyy148w')

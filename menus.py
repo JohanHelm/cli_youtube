@@ -54,6 +54,8 @@ def common_handler(menu_items):
     elif menu_items[gp.SELECTED_ITEM] == 'Remove from favorites.':
         gp.MENU_LEVEL = 'My favorites.'
         yt.rm_channel(gp.CHANNEL_ID)
+    elif menu_items[gp.SELECTED_ITEM] == 'Update the list of video.':
+        yt.update_channel_videos(gp.CHANNEL_ID)
     else:
         gp.MENU_LEVEL = menu_items[gp.SELECTED_ITEM]
 
@@ -85,7 +87,7 @@ MenuItem = namedtuple('MenuItem', ('message', 'choices', 'choice_handler', 'dema
                       defaults=(common_handler, False))
 
 main_menu = MenuItem('Hi, this is YOUTUBE command line client.',
-                     ('Find video.', 'Find channel.', 'My favorites.', 'YOUTUBE API KEY.', 'Check updates.', 'Exit.'))
+                     ('Find video.', 'Find channel.', 'My favorites.', 'YOUTUBE API KEY.', 'Exit.'))
 
 find_video = MenuItem('Type video title.', ('Back to Main menu.', 'Exit.'), common_handler, True)
 
@@ -120,7 +122,8 @@ how_to_add_api_key = MenuItem(how_to_get_api_key_msg, ('Back to YOUTUBE API KEY.
 
 found_channels = MenuItem('Choose channel and press enter to add it in favorites.', options_found_channels, add_channel)
 
-channel_data = MenuItem(channel_data_text, ('Remove from favorites.', 'Videos.', 'Back to My favorites.', 'Exit.'))
+channel_data = MenuItem(channel_data_text, ('Remove from favorites.', 'Update the list of video.', 'Videos.',
+                                            'Back to My favorites.', 'Exit.'))
 
 channel_videos = MenuItem('Choose video and press enter for playback.', options_channel_videos, playback_video)
 

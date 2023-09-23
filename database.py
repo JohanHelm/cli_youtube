@@ -1,9 +1,11 @@
 import sqlite3
 from math import ceil
 from os.path import expanduser
-
+# from pympler import asizeof
 
 class Database:
+    __slots__ = ('connection', 'cursor')
+
     def __init__(self, db_file: str):
         self.connection = sqlite3.connect(db_file)
         self.cursor = self.connection.cursor()
@@ -62,7 +64,7 @@ class Database:
         with self.connection:
             self.cursor.execute("DELETE FROM channels WHERE channel_id = ?", (channel_id,))
             self.cursor.execute("DELETE FROM videos WHERE channel_id = ?", (channel_id,))
-            
+
     def add_video(self, video_id, title, description, author, published_at, thumbnails, channel_id):
         with self.connection:
             self.cursor.execute("INSERT INTO videos (video_id, title, description, author, publishedAt, thumbnails, "
@@ -74,8 +76,15 @@ class Database:
             pages = ceil(self.cursor.execute("SELECT COUNT(*) FROM videos").fetchone()[0] / show_results)
             offset = (page - 1) * show_results
             return self.cursor.execute(
-                "SELECT video_id, title, publishedAt FROM videos WHERE channel_id = ? LIMIT ? OFFSET ? ",
+                "SELECT video_id, title, publishedAt FROM videos WHERE channel_id = ? ORDER BY publishedAt DESC LIMIT ? OFFSET ?",
                 (channel_id, show_results, offset,)).fetchall(), pages
 
+    def check_video_in_db(self, video_id):
+        with self.connection:
+            return self.cursor.execute("SELECT EXISTS (SELECT * FROM videos WHERE video_id = ?)",
+                                       (video_id,)).fetchone()
 
 db = Database(f'{expanduser("~")}/youtube_client/my_favorites.db')
+# print(asizeof.asizeof(db))
+# 824
+# 400
