@@ -16,9 +16,6 @@ class GlobalParameters:
         self.RESULTS_AMOUNT: int = 0
         self.VERSION: float = 1.0
 
-    def set_to_default(self):
-        pass
-
 
 gp = GlobalParameters()
 # print(asizeof.asizeof(gp))

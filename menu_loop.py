@@ -41,8 +41,8 @@ class CliMenuLoop:
                     else:
                         menu_win.addstr(i * interval + j + vertical_shift_2, settings.HORIZONTAL_SHIFT_2, line)
 
-            # Create service message
-            menu_win.addstr(menu_height - menu_text_height - menu_options_height - 4 * interval, 2,
+            if gp.STATUS_MESSAGE:# Create service message
+                menu_win.addstr(menu_height - menu_text_height - menu_options_height - 2 * interval, 2,
                             f"Status log: {gp.STATUS_MESSAGE}")
 
             menu_win.refresh()
