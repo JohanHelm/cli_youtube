@@ -7,14 +7,13 @@ from search_videos import video_search
 class YoutubeManager:
 
     def add_fav_channel(self, page, show_results, selected_item):
-        # Достать id канала
+        # Get channel_id
         channel_id = db.show_temp_channels(page, show_results)[0][selected_item][0]
         channel_info = db.get_channel_from_temp(channel_id)
-        # print(channel_info)
-        # добавить канал если его нет
+        # add channel if the channel no in db
         if not all(db.check_channel_in_fav(channel_id)):
             db.add_channel(*channel_info)
-            # скачать инфу о всех видео канала
+            # get all channel videos
             video_search.find_channel_videos(channel_id)
             while video_search.nextPageToken:
                 video_search.next_page(channel_id)
@@ -36,7 +35,6 @@ class YoutubeManager:
         video_search.update_channel_videos(channel_id)
         while video_search.nextPageToken:
             video_search.next_page(channel_id)
-
 
 
 yt = YoutubeManager()

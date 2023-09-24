@@ -17,49 +17,49 @@ class VideoSearcher:
         self.type = 'video'
 
     def find_channel_videos(self, channel_id: str, page_token: str = None):
-        response = youtube.search().list(channelId=channel_id, part=self.part, type=self.type, pageToken=page_token,
+        try:
+            response = youtube.search().list(channelId=channel_id, part=self.part, type=self.type, pageToken=page_token,
                                          maxResults=50, order='date').execute()
-        self.nextPageToken = response.get('nextPageToken')
-        self.prevPageToken = response.get('prevPageToken')
-        videos = response['items']
-        for num, video in enumerate(videos):
-            video_info = video['snippet']
-            db.add_video(video['id']['videoId'], video_info['title'], video_info['description'],
-                         video_info['channelTitle'], video_info['publishedAt'],
-                         video_info['thumbnails']['default']['url'], video_info['channelId'])
-
-    def next_page(self, search_query: str):
-        if self.nextPageToken:
-            self.find_channel_videos(search_query, self.nextPageToken)
+        except Exception as error:
+            print(error)
         else:
-            print('No more videos.')
-
-    def prev_page(self, search_query: str):
-        if self.prevPageToken:
-            self.find_channel_videos(search_query, self.prevPageToken)
-        else:
-            print('No more videos.')
-
-    def update_channel_videos(self, channel_id: str, page_token: str = None):
-        response = youtube.search().list(channelId=channel_id, part=self.part, type=self.type, pageToken=page_token,
-                                         maxResults=50, order='date').execute()
-        self.nextPageToken = response.get('nextPageToken')
-        self.prevPageToken = response.get('prevPageToken')
-        videos = response['items']
-        for num, video in enumerate(videos):
-            video_info = video['snippet']
-            if all(db.check_video_in_db(video['id']['videoId'])):
-                self.nextPageToken = None
-                self.prevPageToken = None
-                break
-            else:
+            self.nextPageToken = response.get('nextPageToken')
+            self.prevPageToken = response.get('prevPageToken')
+            videos = response['items']
+            for num, video in enumerate(videos):
+                video_info = video['snippet']
                 db.add_video(video['id']['videoId'], video_info['title'], video_info['description'],
                              video_info['channelTitle'], video_info['publishedAt'],
                              video_info['thumbnails']['default']['url'], video_info['channelId'])
 
-    def find_video_by_title(self, search_query: str, page_token: str = None):
-        response = youtube.search().list(q=search_query, part=self.part, type=self.type, pageToken=page_token,
-                                         maxResults=50).execute()
+    def next_page(self, search_query: str):
+        if self.nextPageToken:
+            self.find_channel_videos(search_query, self.nextPageToken)
+
+    def prev_page(self, search_query: str):
+        if self.prevPageToken:
+            self.find_channel_videos(search_query, self.prevPageToken)
+
+    def update_channel_videos(self, channel_id: str, page_token: str = None):
+        try:
+            response = youtube.search().list(channelId=channel_id, part=self.part, type=self.type, pageToken=page_token,
+                                         maxResults=50, order='date').execute()
+        except Exception as error:
+            print(error)
+        else:
+            self.nextPageToken = response.get('nextPageToken')
+            self.prevPageToken = response.get('prevPageToken')
+            videos = response['items']
+            for num, video in enumerate(videos):
+                video_info = video['snippet']
+                if all(db.check_video_in_db(video['id']['videoId'])):
+                    self.nextPageToken = None
+                    self.prevPageToken = None
+                    break
+                else:
+                    db.add_video(video['id']['videoId'], video_info['title'], video_info['description'],
+                                 video_info['channelTitle'], video_info['publishedAt'],
+                                 video_info['thumbnails']['default']['url'], video_info['channelId'])
 
 
 video_search = VideoSearcher(youtube)

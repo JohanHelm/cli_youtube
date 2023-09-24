@@ -14,12 +14,11 @@ class Database:
         self.cursor.execute("CREATE TABLE IF NOT EXISTS videos(video_id TEXT, title TEXT, description TEXT, "
                             "author TEXT, publishedAt DATETIME, thumbnails TEXT, channel_id TEXT, "
                             "viewed BOOLEAN DEFAULT (0))")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS temp_channel_search(channel_id TEXT,  
+                    channelTitle TEXT, publishedAt DATETIME, description TEXT, thumbnails TEXT)""")
 
     def save_temp_channel(self, channel_id, channel_title, publishedat, description, thumbnails):
         with self.connection:
-            self.cursor.execute("""CREATE TABLE IF NOT EXISTS temp_channel_search(channel_id TEXT,  
-            channelTitle TEXT, publishedAt DATETIME, description TEXT, thumbnails TEXT)""")
-
             self.cursor.execute("INSERT INTO temp_channel_search (channel_id, channelTitle, publishedAt, "
                                 " description, thumbnails) VALUES (?, ?, ?, ?, ?)",
                                 (channel_id, channel_title, publishedat, description, thumbnails,))
@@ -42,7 +41,7 @@ class Database:
 
     def clear_temp_channel(self):
         with self.connection:
-            self.cursor.execute("DROP TABLE IF EXISTS temp_channel_search")
+            self.cursor.execute("DELETE FROM temp_channel_search")
 
     def get_channel_from_temp(self, channel_id):
         with self.connection:
