@@ -12,7 +12,9 @@ INSTALLATION
 3. execute it
 
 USAGE
+
 youtube-cli start the application
 
 MPV hot-keys
+
 ctrl+f      resolution change

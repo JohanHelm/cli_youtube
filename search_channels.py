@@ -25,7 +25,8 @@ class ChannelSearcher:
         else:
             self.nextPageToken = response.get('nextPageToken')
             self.prevPageToken = response.get('prevPageToken')
-            channels = response['items']
+            channels = iter(response['items'])
+            del response
             for channel in channels:
                 channel_info = channel['snippet']
                 db.save_temp_channel(channel_info['channelId'], channel_info['channelTitle'],
@@ -42,3 +43,4 @@ class ChannelSearcher:
 
 
 channel_search = ChannelSearcher(youtube)
+# channel_search.find_channel('alex os')

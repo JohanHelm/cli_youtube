@@ -8,7 +8,8 @@ from user_input import input_handler
 
 
 class CliMenuLoop:
-    def create_menu(self, stdscr):
+    @staticmethod
+    def create_menu(stdscr):
         # Disable cursor display
         curses.curs_set(0)
         # Get window size
@@ -41,9 +42,9 @@ class CliMenuLoop:
                     else:
                         menu_win.addstr(i * interval + j + vertical_shift_2, settings.HORIZONTAL_SHIFT_2, line)
 
-            if gp.STATUS_MESSAGE:# Create service message
+            if gp.STATUS_MESSAGE:  # Create service message
                 menu_win.addstr(menu_height - menu_text_height - menu_options_height - 2 * interval, 2,
-                            f"Status log: {gp.STATUS_MESSAGE}")
+                                f"Status log: {gp.STATUS_MESSAGE}")
 
             menu_win.refresh()
 
@@ -75,4 +76,3 @@ class CliMenuLoop:
 
 
 create_menu_loop = CliMenuLoop()
-# print(asizeof.asizeof(create_menu_loop))

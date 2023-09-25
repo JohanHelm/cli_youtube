@@ -6,7 +6,7 @@ from globals import gp
 from youtube import yt
 
 
-def pagination(pages, responce_data):
+def pagination(pages: int, responce_data) -> list:
     gp.RESULTS_AMOUNT = len(responce_data)
     result = [' '.join(i[1:]) for i in responce_data]
     if gp.PAGE < pages:
@@ -42,7 +42,7 @@ def channel_data_text():
     return ' '.join(chosen_channel_data)
 
 
-def common_handler(menu_items):
+def common_handler(menu_items: tuple):
     if menu_items[gp.SELECTED_ITEM] == 'Forward.':
         gp.PAGE += 1
     elif menu_items[gp.SELECTED_ITEM] == 'Back.':
@@ -61,14 +61,14 @@ def common_handler(menu_items):
         gp.MENU_LEVEL = menu_items[gp.SELECTED_ITEM]
 
 
-def add_channel(menu_items):
+def add_channel(menu_items: tuple):
     if gp.SELECTED_ITEM < gp.RESULTS_AMOUNT:
         yt.add_fav_channel(gp.PAGE, gp.SHOW_RESULTS, gp.SELECTED_ITEM)
     else:
         common_handler(menu_items)
 
 
-def show_channel(menu_items):
+def show_channel(menu_items: tuple):
     if gp.SELECTED_ITEM < gp.RESULTS_AMOUNT:
         gp.MENU_LEVEL = 'Channel data.'
         gp.ITEM_TO_SHOW = gp.SELECTED_ITEM
@@ -76,7 +76,7 @@ def show_channel(menu_items):
         common_handler(menu_items)
 
 
-def playback_video(menu_items):
+def playback_video(menu_items: tuple):
     if gp.SELECTED_ITEM < gp.RESULTS_AMOUNT:
         gp.ITEM_TO_SHOW = gp.SELECTED_ITEM
         yt.playback_video(gp.PAGE, gp.SHOW_RESULTS, gp.SELECTED_ITEM, gp.CHANNEL_ID)

@@ -1,6 +1,5 @@
 from youtube_api import youtube
 from database import db
-from pympler import asizeof
 
 # quota cost of 100 unit.
 # Поиск видео по id канала и по названию видео
@@ -25,8 +24,9 @@ class VideoSearcher:
         else:
             self.nextPageToken = response.get('nextPageToken')
             self.prevPageToken = response.get('prevPageToken')
-            videos = response['items']
-            for num, video in enumerate(videos):
+            videos = iter(response['items'])
+            del response
+            for video in videos:
                 video_info = video['snippet']
                 db.add_video(video['id']['videoId'], video_info['title'], video_info['description'],
                              video_info['channelTitle'], video_info['publishedAt'],
@@ -49,8 +49,9 @@ class VideoSearcher:
         else:
             self.nextPageToken = response.get('nextPageToken')
             self.prevPageToken = response.get('prevPageToken')
-            videos = response['items']
-            for num, video in enumerate(videos):
+            videos = iter(response['items'])
+            del response
+            for video in videos:
                 video_info = video['snippet']
                 if all(db.check_video_in_db(video['id']['videoId'])):
                     self.nextPageToken = None
@@ -63,6 +64,3 @@ class VideoSearcher:
 
 
 video_search = VideoSearcher(youtube)
-# print(asizeof.asizeof(video_search))
-# 1066800 with __dict__
-# 1066128

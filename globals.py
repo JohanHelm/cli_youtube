@@ -1,5 +1,3 @@
-# from pympler import asizeof
-
 class GlobalParameters:
     __slots__ = ('SELECTED_ITEM', 'MENU_LEVEL', 'USER_INPUT', 'SHOW_RESULTS', 'PAGE', 'ITEM_TO_SHOW', 'CHANNEL_ID',
                  'STATUS_MESSAGE', 'RESULTS_AMOUNT', 'VERSION')
@@ -18,6 +16,3 @@ class GlobalParameters:
 
 
 gp = GlobalParameters()
-# print(asizeof.asizeof(gp))
-# 1216
-# 352
