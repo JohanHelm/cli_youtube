@@ -49,11 +49,8 @@ class MenuGenerator:
             gp.USER_INPUT = None
             gp.PAGE = 1
             gp.STATUS_MESSAGE = ''
-        # elif menu_items(gp.SELECTED_ITEM).name == 'Remove from favorites.':
-        #     gp.MENU_LEVEL = 'My favorites.'
-        #     yt.rm_channel(gp.CHANNEL_ID)
-        # elif menu_items(gp.SELECTED_ITEM).name == 'Update the list of video.':
-        #     yt.update_channel_videos(gp.CHANNEL_ID)
+        elif gp.SELECTED_ITEM == len(menu_items):
+            quit(0)
         else:
             gp.MENU_LEVEL = menu_items(gp.SELECTED_ITEM).name
 
@@ -86,6 +83,14 @@ class FindChannel(MenuGenerator):
     def create_choices(self) -> tuple:
         options = ('Back to Main menu.', 'Exit.')
         return options
+
+    def choice_handler(self, menu_items):
+        if gp.USER_INPUT:
+            yt.search_channel(gp.USER_INPUT)
+            gp.MENU_LEVEL = 'Found channels.'
+            gp.USER_INPUT = ''
+        else:
+            MenuGenerator.choice_handler(self, menu_items)
 
 
 class MyFavotrite(MenuGenerator):
@@ -145,6 +150,14 @@ class AddApiKey(MenuGenerator):
     def create_choices(self) -> tuple:
         options = ('Back to YOUTUBE API KEY.', 'Exit.')
         return options
+
+    def choice_handler(self, menu_items):
+        if gp.USER_INPUT:
+            with open('api_key.py', 'w', encoding='utf-8') as file:
+                file.write(f'KEY = "{gp.USER_INPUT}"')
+            gp.USER_INPUT = ''
+        else:
+            MenuGenerator.choice_handler(self, menu_items)
 
 
 class HowToAddApiKey(MenuGenerator):
@@ -246,6 +259,15 @@ class ChannelVideos(MenuGenerator):
             MenuGenerator.choice_handler(self, menu_items)
 
 
+class Goodbye():
+    """
+    Just close the application
+    """
+
+    def create_message(self):
+        quit(0)
+
+
 main_menu = MainMenu()
 find_channel = FindChannel()
 my_favorite = MyFavotrite()
@@ -255,6 +277,7 @@ how_to_add_api_key = HowToAddApiKey()
 found_channels = FoundChannels()
 channel_data = ChannelData()
 channel_videos = ChannelVideos()
+goodbye = Goodbye()
 
 menus = {'Main menu.': main_menu,
          'Find channel.': find_channel,
@@ -265,4 +288,5 @@ menus = {'Main menu.': main_menu,
          'Found channels.': found_channels,
          'Channel data.': channel_data,
          'Videos.': channel_videos,
+         'Exit.': goodbye
          }

@@ -4,7 +4,6 @@ from menu_disptcher import md
 from globals import gp
 from menus import menus
 from settings import settings
-from user_input import input_handler
 from exceptions import exceptions_handler
 
 
@@ -57,10 +56,7 @@ class CliMenuLoop:
             elif key == curses.KEY_DOWN and gp.SELECTED_ITEM < len(menu_items) - 1:
                 gp.SELECTED_ITEM += 1
             elif key == ord('\n') or key == ord('\r'):
-                if gp.SELECTED_ITEM == len(menu_items) - 1:
-                    break  # Quit
-                else:
-                    menus[gp.MENU_LEVEL].choice_handler(menu_items)
+                menus[gp.MENU_LEVEL].choice_handler(menu_items)
 
             if demand_user_input and not gp.USER_INPUT:
                 curses.echo()  # Enable on-screen input display
@@ -71,7 +67,7 @@ class CliMenuLoop:
                     exceptions_handler(error)
                 else:
                     curses.noecho()  # Disable on-screen input display
-                    gp.MENU_LEVEL = input_handler(gp.MENU_LEVEL, gp.USER_INPUT)
+                    menus[gp.MENU_LEVEL].choice_handler(menu_items)
 
         curses.endwin()
 

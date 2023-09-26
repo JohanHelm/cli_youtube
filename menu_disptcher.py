@@ -32,14 +32,6 @@ class MenuDispatcher:
 
     @staticmethod
     def give_menu(level: str, string_lenght: int) -> tuple:
-        # if isinstance(menus[level].message, str):
-        #     message = menus[level].message
-        # else:
-        #     message = menus[level].message()
-        # if isinstance(menus[level].choices, tuple):
-        #     options = menus[level].choices
-        # else:
-        #     options = menus[level].choices()
         message = menus[level].create_message()
         options = menus[level].create_choices()
         menu_items, menu_options_height, interval = MenuDispatcher.chunk_menu_options(options, string_lenght)
