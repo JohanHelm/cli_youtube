@@ -1,10 +1,11 @@
 import curses
 
-from cli import give_menu
+from menu_disptcher import md
 from globals import gp
 from menus import menus
 from settings import settings
 from user_input import input_handler
+from exceptions import exceptions_handler
 
 
 class CliMenuLoop:
@@ -24,7 +25,7 @@ class CliMenuLoop:
         while True:
             menu_win.clear()
             # Call give_menu from cli
-            menu_text, menu_text_height, menu_items, menu_options_height, interval, demand_user_input = give_menu(
+            menu_text, menu_text_height, menu_items, menu_options_height, interval, demand_user_input = md.give_menu(
                 gp.MENU_LEVEL, menu_width - 10)
 
             vertical_shift_2 = menu_height - menu_options_height  # отступ сверху перед опциями
@@ -33,15 +34,15 @@ class CliMenuLoop:
             menu_win.addstr(settings.VERTICAL_SHIFT_1, settings.HORIZONTAL_SHIFT_1, menu_text)
 
             # Place options in window
-            for i, item in enumerate(menu_items):
-                lines = item.split('\n')  # Split big text by strings
+            for item in menu_items:
+                lines = item.name.split('\n')  # Split big text by strings
                 for j, line in enumerate(lines):
-                    if i == gp.SELECTED_ITEM:
-                        menu_win.addstr(i * interval + j + vertical_shift_2, settings.HORIZONTAL_SHIFT_2, line,
+                    if item.value == gp.SELECTED_ITEM:
+                        menu_win.addstr(item.value * interval + j + vertical_shift_2, settings.HORIZONTAL_SHIFT_2, line,
                                         curses.A_REVERSE)
                     else:
-                        menu_win.addstr(i * interval + j + vertical_shift_2, settings.HORIZONTAL_SHIFT_2, line)
-
+                        menu_win.addstr(item.value * interval + j + vertical_shift_2, settings.HORIZONTAL_SHIFT_2, line)
+            gp.STATUS_MESSAGE = gp.MENU_LEVEL
             if gp.STATUS_MESSAGE:  # Create service message
                 menu_win.addstr(menu_height - menu_text_height - menu_options_height - 2 * interval, 2,
                                 f"Status log: {gp.STATUS_MESSAGE}")
@@ -67,7 +68,7 @@ class CliMenuLoop:
                 try:
                     gp.USER_INPUT = gp.USER_INPUT.decode("utf-8")
                 except Exception as error:
-                    print(error)
+                    exceptions_handler(error)
                 else:
                     curses.noecho()  # Disable on-screen input display
                     gp.MENU_LEVEL = input_handler(gp.MENU_LEVEL, gp.USER_INPUT)

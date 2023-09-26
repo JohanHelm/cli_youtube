@@ -43,4 +43,3 @@ class ChannelSearcher:
 
 
 channel_search = ChannelSearcher(youtube)
-# channel_search.find_channel('alex os')
