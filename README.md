@@ -7,9 +7,10 @@ It utilizes the MPV media player for playing YouTube videos and shorts.
 
 
 INSTALLATION
-1. paste install.sh at your device home directory
-2. make it executable by chmod 744 install.sh
-3. execute it
+Demand make on your system
+1. apt install make
+2. paste Makefile at your device home directory
+3. make
 
 USAGE
 
