@@ -87,4 +87,4 @@ class Database:
                                        (video_id,)).fetchone()
 
 
-db = Database(f'{expanduser("~")}/youtube_client/my_favorites.db')
+db = Database(f'{expanduser("~")}/cli_youtube/my_favorites.db')
