@@ -1,6 +1,6 @@
 import curses
 
-from menu_loop import create_menu_loop
+from main_loop import create_menu_loop
 
 """
 This is a command-line interface YouTube client application.
