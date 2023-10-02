@@ -49,8 +49,8 @@ class MenuGenerator:
             gp.USER_INPUT = None
             gp.PAGE = 1
             gp.STATUS_MESSAGE = ''
-        elif gp.SELECTED_ITEM == len(menu_items):
-            quit(0)
+        # elif gp.SELECTED_ITEM == len(menu_items):
+        #     quit(0)
         else:
             gp.MENU_LEVEL = menu_items(gp.SELECTED_ITEM).name
 
