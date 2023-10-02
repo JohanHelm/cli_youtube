@@ -1,7 +1,7 @@
-from youtube_api.api_key import KEY
+import youtube as yt
 from database import db
 from globals import gp
-import youtube as yt
+from youtube_api.api_key import KEY
 
 
 class MenuGenerator:
@@ -11,48 +11,49 @@ class MenuGenerator:
         self.demand_user_input = demand_user_input
 
     @staticmethod
-    def pagination(pages: int, responce_data: tuple) -> list:
-        gp.RESULTS_AMOUNT = len(responce_data)
+    def pagination(pages: int, responce_data: tuple, page: int) -> tuple:
+        results_amount = len(responce_data)
         result = [' '.join(i[1:]) for i in responce_data]
-        if gp.PAGE < pages:
+        if page < pages:
             result.append('Forward.')
-        if gp.PAGE > 1:
+        if page > 1:
             result.append('Back.')
-        return result
+        return result, results_amount
 
-    def create_message(self) -> str:
+    def create_message(self, page: int, show_results: int, item_to_show: int) -> tuple:
         """
         Creates menu message
-        :return: message
+        Get channel_id
+        :return: channel_id, message
         """
-        # self.message = ''
-        # return self.message
 
-    def create_choices(self) -> list | tuple:
+    def create_choices(self, page: int, show_results: int, channel_id: str) -> tuple:
         """
         Create menu options
-        :return: options
+        save options amount in results_amount
+        :return: options, results_amount
         """
-        # return options
 
-    def choice_handler(self, menu_items):
+    def choice_handler(self, menu_items, selected_item, menu_level, page, user_input, status_message):
         """
         Takes user choice and executes further actions
         :return: None
         """
-        if menu_items(gp.SELECTED_ITEM).name == 'Forward.':
-            gp.PAGE += 1
-        elif menu_items(gp.SELECTED_ITEM).name == 'Back.':
-            gp.PAGE -= 1
-        elif menu_items(gp.SELECTED_ITEM).name.startswith('Back to '):
-            gp.MENU_LEVEL = menu_items(gp.SELECTED_ITEM).name.replace('Back to ', '')
-            gp.USER_INPUT = None
-            gp.PAGE = 1
-            gp.STATUS_MESSAGE = ''
+        if menu_items(selected_item).name == 'Forward.':
+            page += 1
+        elif menu_items(selected_item).name == 'Back.':
+            page -= 1
+        elif menu_items(selected_item).name.startswith('Back to '):
+            menu_level = menu_items(selected_item).name.replace('Back to ', '')
+            user_input = None
+            page = 1
+            status_message = ''
         # elif gp.SELECTED_ITEM == len(menu_items):
         #     quit(0)
         else:
-            gp.MENU_LEVEL = menu_items(gp.SELECTED_ITEM).name
+            menu_level = menu_items(selected_item).name
+
+        return menu_level, page, user_input, status_message
 
 
 class MainMenu(MenuGenerator):
@@ -61,13 +62,13 @@ class MainMenu(MenuGenerator):
     def __init__(self):
         super().__init__()
 
-    def create_message(self) -> str:
+    def create_message(self, page: int, show_results: int, item_to_show: int) -> tuple:
         message = 'Hi, this is YOUTUBE command line client.'
-        return message
+        return '', message
 
-    def create_choices(self) -> tuple:
+    def create_choices(self, page: int, show_results: int, channel_id: str) -> tuple:
         options = ('Find channel.', 'My favorites.', 'YOUTUBE API KEY.', 'Exit.')
-        return options
+        return options, 0
 
 
 class FindChannel(MenuGenerator):
@@ -76,21 +77,24 @@ class FindChannel(MenuGenerator):
     def __init__(self):
         super().__init__(True)
 
-    def create_message(self) -> str:
+    def create_message(self, page: int, show_results: int, item_to_show: int) -> tuple:
         message = 'Type channel title.'
-        return message
+        return '', message
 
-    def create_choices(self) -> tuple:
+    def create_choices(self, page: int, show_results: int, channel_id: str) -> tuple:
         options = ('Back to Main menu.', 'Exit.')
-        return options
+        return options, 0
 
-    def choice_handler(self, menu_items):
-        if gp.USER_INPUT:
-            yt.search_channel(gp.USER_INPUT)
-            gp.MENU_LEVEL = 'Found channels.'
-            gp.USER_INPUT = ''
+    def choice_handler(self, menu_items, selected_item, menu_level, page, user_input, status_message):
+        if user_input:
+            yt.search_channel(user_input)
+            menu_level = 'Found channels.'
+            user_input = ''
         else:
-            MenuGenerator.choice_handler(self, menu_items)
+            menu_level, page, user_input, status_message = MenuGenerator.choice_handler(self, menu_items, selected_item,
+                                                                                        menu_level, page, user_input,
+                                                                                        status_message)
+        return menu_level, page, user_input, status_message
 
 
 class MyFavotrite(MenuGenerator):
@@ -99,17 +103,17 @@ class MyFavotrite(MenuGenerator):
     def __init__(self):
         super().__init__()
 
-    def create_message(self) -> str:
+    def create_message(self, page: int, show_results: int, item_to_show: int) -> tuple:
         message = 'My favorite channels.'
-        return message
+        return '', message
 
-    def create_choices(self) -> list:
-        my_channels_data, pages = db.show_my_channels(gp.PAGE, gp.SHOW_RESULTS)
-        options = MenuGenerator.pagination(pages, my_channels_data)
+    def create_choices(self, page: int, show_results: int, channel_id: str) -> tuple:
+        my_channels_data, pages = db.show_my_channels(page, show_results)
+        options, results_amount = MenuGenerator.pagination(pages, my_channels_data, page)
         options.extend(['Back to Main menu.', 'Exit.'])
-        return options
+        return options, results_amount
 
-    def choice_handler(self, menu_items):
+    def choice_handler(self, menu_items, selected_item, menu_level, page, user_input, status_message):
         if gp.SELECTED_ITEM < gp.RESULTS_AMOUNT:
             gp.MENU_LEVEL = 'Channel data.'
             gp.ITEM_TO_SHOW = gp.SELECTED_ITEM
@@ -123,13 +127,13 @@ class YotubeApiKey(MenuGenerator):
     def __init__(self):
         super().__init__()
 
-    def create_message(self) -> str:
+    def create_message(self, page: int, show_results: int, item_to_show: int) -> tuple:
         message = 'This application needs YouTube API key.'
-        return message
+        return '', message
 
-    def create_choices(self) -> tuple:
+    def create_choices(self, page: int, show_results: int, channel_id: str) -> tuple:
         options = ('Add YouTube API key.', 'How to add YouTube API key.', 'Back to Main menu.', 'Exit.')
-        return options
+        return options, 0
 
 
 class AddApiKey(MenuGenerator):
@@ -138,18 +142,18 @@ class AddApiKey(MenuGenerator):
     def __init__(self):
         super().__init__(True)
 
-    def create_message(self) -> str:
+    def create_message(self, page: int, show_results: int, item_to_show: int) -> tuple:
         message = f'1. Copy your YouTube API key.\n' \
                   f'2. Press Enter before pasting the key.\n' \
                   f'3. Paste the key using Ctrl+C+V, then press Enter.\n' \
                   f'4. Ensure that the key matches.\n' \
                   f"5. If you don't want to change your key, leave the input field empty and press Enter.\n" \
                   f'Your youtube api key: {KEY}'
-        return message
+        return '', message
 
-    def create_choices(self) -> tuple:
+    def create_choices(self, page: int, show_results: int, channel_id: str) -> tuple:
         options = ('Back to YOUTUBE API KEY.', 'Exit.')
-        return options
+        return options, 0
 
     def choice_handler(self, menu_items):
         if gp.USER_INPUT:
@@ -166,7 +170,7 @@ class HowToAddApiKey(MenuGenerator):
     def __init__(self):
         super().__init__()
 
-    def create_message(self) -> str:
+    def create_message(self, page: int, show_results: int, channel_id: str, item_to_show: int) -> tuple:
         message = f'1. Go to https://console.developers.google.com/\n ' \
                   f'2. Create a new project or select an existing one.\n ' \
                   f'3. In the left navigation menu, select "APIs & Services" > "Library."\n ' \
@@ -179,11 +183,11 @@ class HowToAddApiKey(MenuGenerator):
                   f'8. click "Download" next to the credentials to obtain a JSON file containing the ' \
                   f'credentials.\n ' \
                   f'9. This application demand api_key'
-        return message
+        return '', message
 
-    def create_choices(self) -> tuple:
+    def create_choices(self, page: int, show_results: int, channel_id: str) -> tuple:
         options = ('Back to YOUTUBE API KEY.', 'Exit.')
-        return options
+        return options, 0
 
 
 class FoundChannels(MenuGenerator):
@@ -192,15 +196,15 @@ class FoundChannels(MenuGenerator):
     def __init__(self):
         super().__init__()
 
-    def create_message(self) -> str:
+    def create_message(self, page: int, show_results: int, item_to_show: int) -> tuple:
         message = 'Choose channel and press enter to add it in favorites.'
-        return message
+        return '', message
 
-    def create_choices(self) -> list:
-        found_channels_data, pages = db.show_temp_channels(gp.PAGE, gp.SHOW_RESULTS)
-        options = MenuGenerator.pagination(pages, found_channels_data)
+    def create_choices(self, page: int, show_results: int, channel_id: str) -> list:
+        found_channels_data, pages = db.show_temp_channels(page, show_results)
+        options, results_amount = MenuGenerator.pagination(pages, found_channels_data, page)
         options.extend(['Back to Main menu.', 'Exit.'])
-        return options
+        return options, results_amount
 
     def choice_handler(self, menu_items):
         if gp.SELECTED_ITEM < gp.RESULTS_AMOUNT:
@@ -215,13 +219,13 @@ class ChannelData(MenuGenerator):
     def __init__(self):
         super().__init__()
 
-    def create_message(self) -> str:
-        gp.CHANNEL_ID, *chosen_channel_data = db.show_my_channels(gp.PAGE, gp.SHOW_RESULTS)[0][gp.ITEM_TO_SHOW]
-        return ' '.join(chosen_channel_data)
+    def create_message(self, page: int, show_results: int, item_to_show: int) -> tuple:
+        channel_id, *chosen_channel_data = db.show_my_channels(page, show_results)[0][item_to_show]
+        return channel_id, ' '.join(chosen_channel_data)
 
-    def create_choices(self) -> tuple:
+    def create_choices(self, page: int, show_results: int, channel_id: str) -> tuple:
         options = ('Remove from favorites.', 'Update the list of video.', 'Videos.', 'Back to My favorites.', 'Exit.')
-        return options
+        return options, 0
 
     def choice_handler(self, menu_items):
         # if menu_items(gp.SELECTED_ITEM).name == 'Remove from favorites.':
@@ -241,15 +245,15 @@ class ChannelVideos(MenuGenerator):
     def __init__(self):
         super().__init__()
 
-    def create_message(self) -> str:
+    def create_message(self, page: int, show_results: int, item_to_show: int) -> tuple:
         message = 'Choose video and press enter for playback.'
-        return message
+        return '', message
 
-    def create_choices(self) -> list:
-        channel_videos_data, pages = db.show_channel_videos(gp.PAGE, gp.SHOW_RESULTS, gp.CHANNEL_ID)
-        options = MenuGenerator.pagination(pages, channel_videos_data)
+    def create_choices(self, page: int, show_results: int, channel_id: str) -> list:
+        channel_videos_data, pages = db.show_channel_videos(page, show_results, channel_id)
+        options, results_amount = MenuGenerator.pagination(pages, channel_videos_data, page)
         options.extend(['Back to Channel data.', 'Exit.'])
-        return options
+        return options, results_amount
 
     def choice_handler(self, menu_items):
         if gp.SELECTED_ITEM < gp.RESULTS_AMOUNT:
@@ -264,7 +268,7 @@ class Goodbye():
     Just close the application
     """
 
-    def create_message(self):
+    def create_message(self, page: int, show_results: int, item_to_show: int):
         quit(0)
 
 

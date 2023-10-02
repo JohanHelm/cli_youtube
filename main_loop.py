@@ -1,21 +1,19 @@
 import curses
 
+from exceptions import exceptions_handler
 from menu.menu_disptcher import give_menu
-from globals import gp
 from menu.menus import menus
 from settings import settings
-from exceptions import exceptions_handler
 
 
 class CliMenuLoop:
-    __slots__ = ('selected_item', 'menu_level', 'user_input', 'show_results', 'page', 'item_to_show', 'channel_id',
+    __slots__ = ('selected_item', 'menu_level', 'user_input', 'page', 'item_to_show', 'channel_id',
                  'status_message', 'results_amount', 'version')
 
     def __init__(self):
         self.selected_item: int = 0
         self.menu_level: str = 'Main menu.'
         self.user_input: str = ''
-        self.show_results: int = 5
         self.page: int = 1
         self.item_to_show: int = 0
         self.channel_id: str = ''
@@ -37,9 +35,11 @@ class CliMenuLoop:
 
         while True:
             menu_win.clear()
-            # Call give_menu from cli
-            menu_text, menu_text_height, menu_items, menu_options_height, interval, demand_user_input = give_menu(
-                self.menu_level, menu_width - 10)
+
+            menu_text, menu_text_height, menu_items, menu_options_height, interval, demand_user_input, channel_id = \
+                give_menu(
+                    self.menu_level, menu_width - 10, self.page, settings.SHOW_RESULTS, self.channel_id,
+                    self.item_to_show)
 
             vertical_shift_2 = menu_height - menu_options_height
 
@@ -70,7 +70,9 @@ class CliMenuLoop:
             elif key == curses.KEY_DOWN and self.selected_item < len(menu_items) - 1:
                 self.selected_item += 1
             elif key == ord('\n') or key == ord('\r'):
-                menus[self.menu_level].choice_handler(menu_items)
+                self.menu_level, self.page, self.user_input, self.status_message = menus[
+                    self.menu_level].choice_handler(menu_items, self.selected_item, self.menu_level, self.page,
+                                                    self.user_input, self.status_message)
 
             if demand_user_input and not self.user_input:
                 curses.echo()  # Enable on-screen input display
@@ -81,7 +83,9 @@ class CliMenuLoop:
                     exceptions_handler(error)
                 else:
                     curses.noecho()  # Disable on-screen input display
-                    menus[self.menu_level].choice_handler(menu_items)
+                    self.menu_level, self.page, self.user_input, self.status_message = menus[
+                        self.menu_level].choice_handler(menu_items, self.selected_item, self.menu_level, self.page,
+                                                        self.user_input, self.status_message)
 
         # curses.endwin()
 
