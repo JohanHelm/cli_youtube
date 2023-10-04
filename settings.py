@@ -1,6 +1,7 @@
 class Settings:
     __slots__ = (
-    'MENU_Y', 'MENU_X', 'VERTICAL_SHIFT_1', 'HORIZONTAL_SHIFT_1', 'HORIZONTAL_SHIFT_2', 'SUBINTERVAL', 'SHOW_RESULTS')
+    'MENU_Y', 'MENU_X', 'VERTICAL_SHIFT_1', 'HORIZONTAL_SHIFT_1', 'HORIZONTAL_SHIFT_2', 'SUBINTERVAL', 'SHOW_RESULTS',
+    'VERSION')
 
     def __init__(self):
         self.MENU_Y: int = 1
@@ -10,6 +11,7 @@ class Settings:
         self.HORIZONTAL_SHIFT_2: int = 2  # отступ слева перед вариантами
         self.SUBINTERVAL: int = 0  # empty string between options
         self.SHOW_RESULTS: int = 5
+        self.VERSION: float = 1.0
 
 
 settings = Settings()

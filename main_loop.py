@@ -1,6 +1,6 @@
 import curses
 
-from exceptions import exceptions_handler
+from exceptions import exceptions
 from menu.menu_disptcher import give_menu
 from menu.menus import menus
 from settings import settings
@@ -18,8 +18,8 @@ class CliMenuLoop:
         self.item_to_show: int = 0
         self.channel_id: str = ''
         self.status_message: str = ''
-        self.results_amount: int = 0
-        self.version: float = 1.0
+        # self.results_amount: int = 0
+        # self.version: float = 1.0
 
     def create_menu(self, stdscr):
         # Disable cursor display
@@ -36,8 +36,8 @@ class CliMenuLoop:
         while True:
             menu_win.clear()
 
-            menu_text, menu_text_height, menu_items, menu_options_height, interval, demand_user_input, channel_id = \
-                give_menu(
+            menu_text, menu_text_height, menu_items, menu_options_height, interval, demand_user_input, \
+            self.channel_id, results_amount = give_menu(
                     self.menu_level, menu_width - 10, self.page, settings.SHOW_RESULTS, self.channel_id,
                     self.item_to_show)
 
@@ -55,8 +55,10 @@ class CliMenuLoop:
                                         curses.A_REVERSE)
                     else:
                         menu_win.addstr(item.value * interval + j + vertical_shift_2, settings.HORIZONTAL_SHIFT_2, line)
-            self.status_message = self.menu_level
-            if self.status_message:  # Create service message
+
+            # Create service message
+            self.status_message = f"{self.menu_level} {self.channel_id} {self.item_to_show} {self.page} {exceptions.reason}"
+            if self.status_message:
                 menu_win.addstr(menu_height - menu_text_height - menu_options_height - 2 * interval, 2,
                                 f"Status log: {self.status_message}")
 
@@ -70,9 +72,10 @@ class CliMenuLoop:
             elif key == curses.KEY_DOWN and self.selected_item < len(menu_items) - 1:
                 self.selected_item += 1
             elif key == ord('\n') or key == ord('\r'):
-                self.menu_level, self.page, self.user_input, self.status_message = menus[
+                self.menu_level, self.page, self.user_input, self.status_message, self.item_to_show = menus[
                     self.menu_level].choice_handler(menu_items, self.selected_item, self.menu_level, self.page,
-                                                    self.user_input, self.status_message)
+                                                    self.user_input, self.status_message, results_amount,
+                                                    self.channel_id, self.item_to_show)
 
             if demand_user_input and not self.user_input:
                 curses.echo()  # Enable on-screen input display
@@ -80,12 +83,13 @@ class CliMenuLoop:
                 try:
                     self.user_input = self.user_input.decode("utf-8")
                 except Exception as error:
-                    exceptions_handler(error)
+                    exceptions.handler(error)
                 else:
                     curses.noecho()  # Disable on-screen input display
-                    self.menu_level, self.page, self.user_input, self.status_message = menus[
+                    self.menu_level, self.page, self.user_input, self.status_message, self.item_to_show = menus[
                         self.menu_level].choice_handler(menu_items, self.selected_item, self.menu_level, self.page,
-                                                        self.user_input, self.status_message)
+                                                        self.user_input, self.status_message, results_amount,
+                                                        self.channel_id, self.item_to_show)
 
         # curses.endwin()
 

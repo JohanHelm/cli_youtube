@@ -43,6 +43,13 @@ class Database:
                 "SELECT channel_Id, channelTitle, publishedAt, description FROM channels LIMIT ? OFFSET ?",
                 (show_results, offset,)).fetchall(), pages
 
+    def show_back_channel(self, channel_id: str) -> tuple:
+        with self.connection:
+            cursor = self.connection.cursor()
+            return cursor.execute(
+                "SELECT channel_Id, channelTitle, publishedAt, description FROM channels WHERE channel_id = ?",
+                (channel_id,)).fetchone()
+
     def clear_temp_channel(self):
         with self.connection:
             cursor = self.connection.cursor()

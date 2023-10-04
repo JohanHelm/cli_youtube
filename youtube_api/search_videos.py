@@ -1,5 +1,5 @@
 from database import db
-from exceptions import exceptions_handler
+from exceptions import exceptions
 from youtube_api.api_connect import youtube
 
 
@@ -22,7 +22,7 @@ class VideoSearcher:
             response = youtube.search().list(channelId=channel_id, part=self.part, type=self.type, pageToken=page_token,
                                              maxResults=50, order='date').execute()
         except Exception as error:
-            exceptions_handler(error)
+            exceptions.handler(error)
         else:
             self.nextPageToken = response.get('nextPageToken')
             self.prevPageToken = response.get('prevPageToken')
@@ -47,7 +47,7 @@ class VideoSearcher:
             response = youtube.search().list(channelId=channel_id, part=self.part, type=self.type, pageToken=page_token,
                                              maxResults=50, order='date').execute()
         except Exception as error:
-            exceptions_handler(error)
+            exceptions.handler(error)
         else:
             self.nextPageToken = response.get('nextPageToken')
             self.prevPageToken = response.get('prevPageToken')

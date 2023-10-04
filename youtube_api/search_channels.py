@@ -1,6 +1,6 @@
 from database import db
 from youtube_api.api_connect import youtube
-from exceptions import exceptions_handler
+from exceptions import exceptions
 
 # quota cost of 100 unit.
 # Поиск канала по имени
@@ -21,7 +21,7 @@ class ChannelSearcher:
             response = self.youtube.search().list(part=self.part, type=self.type, pageToken=page_token, q=search_query,
                                                   maxResults=50).execute()
         except Exception as error:
-            exceptions_handler(error)
+            exceptions.handler(error)
         else:
             self.nextPageToken = response.get('nextPageToken')
             self.prevPageToken = response.get('prevPageToken')
