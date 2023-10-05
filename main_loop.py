@@ -7,8 +7,7 @@ from settings import settings
 
 
 class CliMenuLoop:
-    __slots__ = ('selected_item', 'menu_level', 'user_input', 'page', 'item_to_show', 'channel_id',
-                 'status_message', 'results_amount', 'version')
+    __slots__ = ('selected_item', 'menu_level', 'user_input', 'page', 'item_to_show', 'channel_id', 'status_message')
 
     def __init__(self):
         self.selected_item: int = 0
@@ -18,8 +17,6 @@ class CliMenuLoop:
         self.item_to_show: int = 0
         self.channel_id: str = ''
         self.status_message: str = ''
-        # self.results_amount: int = 0
-        # self.version: float = 1.0
 
     def create_menu(self, stdscr):
         # Disable cursor display
@@ -38,8 +35,7 @@ class CliMenuLoop:
 
             menu_text, menu_text_height, menu_items, menu_options_height, interval, demand_user_input, \
             self.channel_id, results_amount = give_menu(
-                    self.menu_level, menu_width - 10, self.page, settings.SHOW_RESULTS, self.channel_id,
-                    self.item_to_show)
+                self.menu_level, menu_width - 10, self.page, settings.SHOW_RESULTS, self.channel_id, self.item_to_show)
 
             vertical_shift_2 = menu_height - menu_options_height
 
@@ -57,7 +53,8 @@ class CliMenuLoop:
                         menu_win.addstr(item.value * interval + j + vertical_shift_2, settings.HORIZONTAL_SHIFT_2, line)
 
             # Create service message
-            self.status_message = f"{self.menu_level} {self.channel_id} {self.item_to_show} {self.page} {exceptions.reason}"
+            self.status_message = f"{self.menu_level} {self.channel_id} {self.item_to_show} {self.page} " \
+                                  f"{exceptions.reason}"
             if self.status_message:
                 menu_win.addstr(menu_height - menu_text_height - menu_options_height - 2 * interval, 2,
                                 f"Status log: {self.status_message}")

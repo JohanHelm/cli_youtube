@@ -1,6 +1,8 @@
-from database import db
+from requests import get
+
+from youtube_api.api_key import KEY
 from exceptions import exceptions
-from youtube_api.api_connect import youtube
+from database import db
 
 
 # quota cost of 100 unit.
@@ -8,19 +10,20 @@ from youtube_api.api_connect import youtube
 
 
 class VideoSearcher:
-    __slots__ = ('youtube', 'nextPageToken', 'prevPageToken', 'part', 'type')
+    __slots__ = ('url', 'nextPageToken', 'prevPageToken', 'part', 'type')
 
-    def __init__(self, youtube):
-        self.youtube = youtube
-        self.nextPageToken = None
-        self.prevPageToken = None
+    def __init__(self):
+        self.url = 'https://youtube.googleapis.com/youtube/v3/search?'
+        self.nextPageToken = ''
+        self.prevPageToken = ''
         self.part = 'snippet'
         self.type = 'video'
 
-    def find_channel_videos(self, channel_id: str, page_token: str = None):
+    def find_channel_videos(self, channel_id: str, page_token: str = ''):
+        url = f"{self.url}part={self.part}&type={self.type}&max_results=50&order=date&channelId={channel_id}" \
+              f"&key={KEY}&pageToken={page_token}"
         try:
-            response = youtube.search().list(channelId=channel_id, part=self.part, type=self.type, pageToken=page_token,
-                                             maxResults=50, order='date').execute()
+            response = get(url).json()
         except Exception as error:
             exceptions.handler(error)
         else:
@@ -42,10 +45,11 @@ class VideoSearcher:
         if self.prevPageToken:
             self.find_channel_videos(search_query, self.prevPageToken)
 
-    def update_channel_videos(self, channel_id: str, page_token: str = None):
+    def update_channel_videos(self, channel_id: str, page_token: str = ''):
+        url = f"{self.url}part={self.part}&type={self.type}&max_results=50&order=date&channelId={channel_id}" \
+              f"&key={KEY}&pageToken={page_token}"
         try:
-            response = youtube.search().list(channelId=channel_id, part=self.part, type=self.type, pageToken=page_token,
-                                             maxResults=50, order='date').execute()
+            response = get(url).json()
         except Exception as error:
             exceptions.handler(error)
         else:
@@ -65,4 +69,4 @@ class VideoSearcher:
                                  video_info['thumbnails']['default']['url'], video_info['channelId'])
 
 
-video_search = VideoSearcher(youtube)
+video_search = VideoSearcher()

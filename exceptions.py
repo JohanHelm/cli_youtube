@@ -1,6 +1,5 @@
 from datetime import datetime
 
-from googleapiclient.errors import HttpError
 from httplib2.error import ServerNotFoundError
 
 
@@ -18,9 +17,9 @@ class MyExceptions:
     def handler(self, error):
         self.save_to_log(error)
         prefix = 'The following error occurred during the last operation:'
-        if isinstance(error, HttpError):
-            self.reason = f'{prefix} {error._get_reason()}'
-        elif isinstance(error, TimeoutError):
+        # if isinstance(error, HttpError):
+        #     self.reason = f'{prefix} {error._get_reason()}'
+        if isinstance(error, TimeoutError):
             self.reason = f'{prefix} Request time exceeded timeout.'
         elif isinstance(error, UnicodeDecodeError):
             self.reason = 'An error occurred during user input decoding, please repeat your input.'

@@ -1,25 +1,28 @@
-from database import db
-from youtube_api.api_connect import youtube
+from requests import get
+
+from youtube_api.api_key import KEY
 from exceptions import exceptions
+from database import db
 
 # quota cost of 100 unit.
 # Поиск канала по имени
 
 
 class ChannelSearcher:
-    __slots__ = ('youtube', 'nextPageToken', 'prevPageToken', 'part', 'type')
+    __slots__ = ('url', 'nextPageToken', 'prevPageToken', 'part', 'type')
 
-    def __init__(self, youtube):
-        self.youtube = youtube
-        self.nextPageToken = None
-        self.prevPageToken = None
+    def __init__(self):
+        self.url = 'https://youtube.googleapis.com/youtube/v3/search?'
+        self.nextPageToken = ''
+        self.prevPageToken = ''
         self.part = 'snippet'
         self.type = 'channel'
 
-    def find_channel(self, search_query: str, page_token: str = None):
+    def find_channel(self, search_query: str, page_token: str = ''):
+        url = f"{self.url}part={self.part}&type={self.type}&max_results=50&q={search_query}" \
+              f"&key={KEY}&pageToken={page_token}"
         try:
-            response = self.youtube.search().list(part=self.part, type=self.type, pageToken=page_token, q=search_query,
-                                                  maxResults=50).execute()
+            response = get(url).json()
         except Exception as error:
             exceptions.handler(error)
         else:
@@ -42,4 +45,4 @@ class ChannelSearcher:
             self.find_channel(search_query, self.prevPageToken)
 
 
-channel_search = ChannelSearcher(youtube)
+channel_search = ChannelSearcher()
