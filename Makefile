@@ -8,7 +8,7 @@ apt-install:
 
 venv:
     @git clone https://github.com/JohanHelm/cli_youtube.git $(HOME)/cli_youtube
-    @cd $(HOME)/cli_youtube && touch api_key.py && echo "KEY = ''" > api_key.py
+    @cd $(HOME)/cli_youtube/youtube_api && touch api_key.py && echo "KEY = ''" > api_key.py
     @python3 -m venv $(HOME)/cli_youtube/venv
     @. $(HOME)/cli_youtube/venv/bin/activate && pip install -r $(HOME)/cli_youtube/requirements.txt && deactivate
 

@@ -29,8 +29,7 @@ class VideoSearcher:
         else:
             self.nextPageToken = response.get('nextPageToken')
             self.prevPageToken = response.get('prevPageToken')
-            videos = iter(response['items'])
-            del response
+            videos = response['items']
             for video in videos:
                 video_info = video['snippet']
                 db.add_video(video['id']['videoId'], video_info['title'], video_info['description'],

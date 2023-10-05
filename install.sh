@@ -1,7 +1,6 @@
 #!/bin/bash
 
-sudo apt update && sudo apt install -y wget mpv ffmpeg yt-dlp git
-sudo apt install -y python3-venv
+sudo apt update && sudo apt install -y wget mpv ffmpeg yt-dlp git python3-venv
 
 git clone https://github.com/JohanHelm/cli_youtube.github
 
@@ -9,7 +8,7 @@ git clone https://github.com/JohanHelm/cli_youtube.github
 ### Cкрипт установки и запуска приложения
 # Укажите в какую директорию вы хотите установить
 
-cd $HOME/cli_youtube
+cd $HOME/cli_youtube/youtube_api
 # Установить венв
 touch api_key.py
 echo "KEY = ''" >api_key.py
