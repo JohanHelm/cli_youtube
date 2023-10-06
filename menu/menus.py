@@ -1,8 +1,10 @@
 from os.path import expanduser
+from subprocess import PIPE, Popen
 
 import youtube as yt
 from database import Database
 from youtube_api.api_key import KEY
+
 
 
 class MenuGenerator:
@@ -47,6 +49,11 @@ class MenuGenerator:
             page += 1
         elif menu_items(selected_item).name == 'Back':
             page -= 1
+        elif menu_items(selected_item).name == 'Check_for_updates':
+            cmd = f'git pull origin cli'
+            update_request = Popen(cmd, stdout=PIPE, stderr=PIPE, shell=True, universal_newlines=True)
+            if update_request.communicate()[0] != 'Already up to date.':
+                quit(0)
         elif selected_item == len(menu_items) - 1:  # 'Exit.'
             quit(0)
         elif menu_items(selected_item).name.startswith('Back_to_') and menu_level != 'Videos':
@@ -69,7 +76,7 @@ class MainMenu(MenuGenerator):
         return '', message
 
     def create_choices(self, page: int, show_results: int, channel_id: str) -> tuple:
-        options = ('Find_channel', 'My_favorites', 'YOUTUBE_API_KEY', 'Exit')
+        options = ('Find_channel', 'My_favorites', 'YOUTUBE_API_KEY', 'Check_for_updates', 'Exit')
         return options, 0
 
 
