@@ -53,7 +53,6 @@ class VideoSearcher:
               f"&key={KEY}&pageToken={page_token}"
         try:
             response = get(url).json()
-            print(response)
         except Exception as error:
             self.exceptions.handler(error)
         else:
@@ -72,4 +71,3 @@ class VideoSearcher:
                                  video_info['thumbnails']['default']['url'], video_info['channelId'])
 
 s = VideoSearcher()
-s.update_channel_videos('UCK32UD_GM-eUOX1Z2dM5Fxg')
