@@ -1,4 +1,5 @@
 from os.path import expanduser
+from os import chdir, getcwd
 from subprocess import PIPE, Popen
 
 import youtube as yt
@@ -23,6 +24,19 @@ class MenuGenerator:
         if page > 1:
             result.append('Back')
         return result, results_amount
+
+    @staticmethod
+    def check_for_updates():
+        current_directory = getcwd()
+        chdir(f'{expanduser("~")}/.local/share/cli_youtube/')
+        cmd = f'git pull origin cli '
+        update_request = Popen(cmd, stdout=PIPE, stderr=PIPE, shell=True, universal_newlines=True)
+        update_result = update_request.communicate()[0]
+        if 'Already up to date.\n' in update_result:
+            chdir(current_directory)
+        else:
+            quit(0)
+
 
     def create_message(self, page: int, show_results: int, item_to_show: int, channel_id: str) -> tuple[str, str]:
         """
@@ -50,11 +64,7 @@ class MenuGenerator:
         elif menu_items(selected_item).name == 'Back':
             page -= 1
         elif menu_items(selected_item).name == 'Check_for_updates':
-            cmd = f'git pull origin cli'
-            update_request = Popen(cmd, stdout=PIPE, stderr=PIPE, shell=True, universal_newlines=True)
-            update_result = update_request.communicate()[0]
-            if 'Already up to date.\n' not in update_result:
-                quit(0)
+            MenuGenerator.check_for_updates()
         elif selected_item == len(menu_items) - 1:  # 'Exit.'
             quit(0)
         elif menu_items(selected_item).name.startswith('Back_to_') and menu_level != 'Videos':
