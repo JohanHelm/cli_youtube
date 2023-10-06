@@ -52,7 +52,8 @@ class MenuGenerator:
         elif menu_items(selected_item).name == 'Check_for_updates':
             cmd = f'git pull origin cli'
             update_request = Popen(cmd, stdout=PIPE, stderr=PIPE, shell=True, universal_newlines=True)
-            if update_request.communicate()[0] != 'Already up to date.':
+            update_result = update_request.communicate()[0]
+            if update_result != 'Already up to date.':
                 quit(0)
         elif selected_item == len(menu_items) - 1:  # 'Exit.'
             quit(0)
