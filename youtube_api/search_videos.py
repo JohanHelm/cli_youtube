@@ -27,17 +27,18 @@ class VideoSearcher:
               f"&key={KEY}&pageToken={page_token}"
         try:
             response = get(url).json()
+
         except Exception as error:
             self.exceptions.handler(error)
         else:
-            self.nextPageToken = response.get('nextPageToken')
-            self.prevPageToken = response.get('prevPageToken')
-            videos = response['items']
+            self.nextPageToken = response.get('nextPageToken', '')
+            self.prevPageToken = response.get('prevPageToken', '')
+            videos = response.get('items', '')
             for video in videos:
                 video_info = video['snippet']
                 self.db.add_video(video['id']['videoId'], video_info['title'], video_info['description'],
-                             video_info['channelTitle'], video_info['publishedAt'],
-                             video_info['thumbnails']['default']['url'], video_info['channelId'])
+                                 video_info['channelTitle'], video_info['publishedAt'],
+                                 video_info['thumbnails']['default']['url'], video_info['channelId'])
 
     def next_page(self, search_query: str):
         if self.nextPageToken:
@@ -52,13 +53,13 @@ class VideoSearcher:
               f"&key={KEY}&pageToken={page_token}"
         try:
             response = get(url).json()
+            print(response)
         except Exception as error:
             self.exceptions.handler(error)
         else:
-            self.nextPageToken = response.get('nextPageToken')
-            self.prevPageToken = response.get('prevPageToken')
-            videos = iter(response['items'])
-            del response
+            self.nextPageToken = response.get('nextPageToken', '')
+            self.prevPageToken = response.get('prevPageToken', '')
+            videos = response.get('items', '')
             for video in videos:
                 video_info = video['snippet']
                 if all(self.db.check_video_in_db(video['id']['videoId'])):
@@ -69,3 +70,6 @@ class VideoSearcher:
                     self.db.add_video(video['id']['videoId'], video_info['title'], video_info['description'],
                                  video_info['channelTitle'], video_info['publishedAt'],
                                  video_info['thumbnails']['default']['url'], video_info['channelId'])
+
+s = VideoSearcher()
+s.update_channel_videos('UCK32UD_GM-eUOX1Z2dM5Fxg')

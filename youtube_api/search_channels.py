@@ -30,10 +30,9 @@ class ChannelSearcher:
         except Exception as error:
             self.exceptions.handler(error)
         else:
-            self.nextPageToken = response.get('nextPageToken')
-            self.prevPageToken = response.get('prevPageToken')
-            channels = response['items']
-
+            self.nextPageToken = response.get('nextPageToken', '')
+            self.prevPageToken = response.get('prevPageToken', '')
+            channels = response.get('items', '')
             for channel in channels:
                 channel_info = channel['snippet']
                 self.db.save_temp_channel(channel_info['channelId'], channel_info['channelTitle'],
