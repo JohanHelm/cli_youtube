@@ -3,8 +3,8 @@
 install: apt-install venv alias mpv-scripts
 
 apt-install:
-# 	@sudo apt update
-# 	@sudo apt install -y wget mpv ffmpeg yt-dlp git python3-venv
+	@sudo apt update
+	@sudo apt install -y wget mpv ffmpeg yt-dlp git python3-venv
 
 venv:
 	@git clone https://github.com/JohanHelm/cli_youtube.git $(HOME)/.local/share/cli_youtube
