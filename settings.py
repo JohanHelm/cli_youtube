@@ -11,4 +11,4 @@ class Settings:
         self.HORIZONTAL_SHIFT_2: int = 2  # отступ слева перед вариантами
         self.SUBINTERVAL: int = 0  # empty string between options
         self.SHOW_RESULTS: int = 5
-        self.VERSION: float = 1.0
+        self.VERSION: str = '1.0a'
