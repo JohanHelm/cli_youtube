@@ -1,7 +1,7 @@
 import curses
 
 from exceptions import MyExceptions
-from menu.menu_disptcher import give_menu
+from menu.menu_dispatcher import give_menu
 from menu.menus import Menus
 from settings import Settings
 

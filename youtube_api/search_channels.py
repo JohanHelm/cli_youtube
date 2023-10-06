@@ -19,7 +19,7 @@ class ChannelSearcher:
         self.prevPageToken = ''
         self.part = 'snippet'
         self.type = 'channel'
-        self.db = Database(f'{expanduser("~")}/cli_youtube/my_favorites.db')
+        self.db = Database(f'{expanduser("~")}/.local/share/cli_youtube/my_favorites.db')
         self.exceptions = MyExceptions()
 
     def find_channel(self, search_query: str, page_token: str = ''):

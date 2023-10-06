@@ -1,8 +1,5 @@
 from enum import Enum
 
-# from menu.menus import menus
-# from settings import settings
-
 
 def chunk_menu_text(text: str, lenght: int) -> tuple:
     result = []

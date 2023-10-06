@@ -19,7 +19,7 @@ class VideoSearcher:
         self.prevPageToken = ''
         self.part = 'snippet'
         self.type = 'video'
-        self.db = Database(f'{expanduser("~")}/cli_youtube/my_favorites.db')
+        self.db = Database(f'{expanduser("~")}/.local/share/cli_youtube/my_favorites.db')
         self.exceptions = MyExceptions()
 
     def find_channel_videos(self, channel_id: str, page_token: str = ''):

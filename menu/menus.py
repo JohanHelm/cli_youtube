@@ -2,7 +2,6 @@ from os.path import expanduser
 
 import youtube as yt
 from database import Database
-# from settings import settings
 from youtube_api.api_key import KEY
 
 
@@ -11,7 +10,7 @@ class MenuGenerator:
 
     def __init__(self, demand_user_input=False):
         self.demand_user_input = demand_user_input
-        self.db = Database(f'{expanduser("~")}/cli_youtube/my_favorites.db')
+        self.db = Database(f'{expanduser("~")}/.local/share/cli_youtube/my_favorites.db')
 
     @staticmethod
     def pagination(pages: int, responce_data: tuple, page: int) -> tuple[list, int]:
