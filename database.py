@@ -1,6 +1,5 @@
 import sqlite3
 from math import ceil
-from os.path import expanduser
 
 
 class Database:
@@ -103,6 +102,3 @@ class Database:
             cursor = self.connection.cursor()
             return cursor.execute("SELECT EXISTS (SELECT * FROM videos WHERE video_id = ?)",
                                   (video_id,)).fetchone()
-
-
-db = Database(f'{expanduser("~")}/cli_youtube/my_favorites.db')

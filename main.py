@@ -1,6 +1,6 @@
 import curses
 
-from main_loop import create_menu_loop
+from main_loop import CliMenuLoop
 
 """
 This is a command-line interface YouTube client application.
@@ -12,4 +12,5 @@ It utilizes the MPV media player for playing YouTube videos and shorts.
 """
 
 if __name__ == "__main__":
+    create_menu_loop = CliMenuLoop()
     curses.wrapper(create_menu_loop.create_menu)

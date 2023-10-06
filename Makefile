@@ -7,13 +7,13 @@ apt-install:
     @sudo apt install -y wget mpv ffmpeg yt-dlp git python3-venv
 
 venv:
-    @git clone https://github.com/JohanHelm/cli_youtube.git $(HOME)/cli_youtube
-    @cd $(HOME)/cli_youtube/youtube_api && touch api_key.py && echo "KEY = ''" > api_key.py
-    @python3 -m venv $(HOME)/cli_youtube/venv
-    @. $(HOME)/cli_youtube/venv/bin/activate && pip install -r $(HOME)/cli_youtube/requirements.txt && deactivate
+    @git clone https://github.com/JohanHelm/cli_youtube.git $(HOME)/.local/share/cli_youtube
+    @cd $(HOME)/.local/share/cli_youtube/youtube_api && touch api_key.py && echo "KEY = ''" > api_key.py
+    @python3 -m venv $(HOME)/.local/share/cli_youtube/venv
+    @. $(HOME)/.local/share/cli_youtube/venv/bin/activate && pip install -r $(HOME)/.local/share/cli_youtube/requirements.txt && deactivate
 
 alias:
-    @echo "alias youtube-cli='$(HOME)/cli_youtube/venv/bin/python $(HOME)/cli_youtube/main.py'" >> $(HOME)/.bashrc
+    @echo "alias youtube-cli='$(HOME)/.local/share/cli_youtube/venv/bin/python $(HOME)/.local/share/cli_youtube/main.py'" >> $(HOME)/.bashrc
     @. $(HOME)/.bashrc
 
 mpv-scripts:

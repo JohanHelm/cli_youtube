@@ -1,37 +1,27 @@
 #!/bin/bash
 
+# install neccesary utilites
 sudo apt update && sudo apt install -y wget mpv ffmpeg yt-dlp git python3-venv
+# clone the app
+git clone https://github.com/JohanHelm/cli_youtube.git $(HOME)/.local/share/cli_youtube
 
-git clone https://github.com/JohanHelm/cli_youtube.github
+cd $(HOME)/.local/share/cli_youtube
+# create file for api key
+touch youtube_api/api_key.py
+echo "KEY = ''" > youtube_api/api_key.py
 
-
-### Cкрипт установки и запуска приложения
-# Укажите в какую директорию вы хотите установить
-
-cd $HOME/cli_youtube/youtube_api
-# Установить венв
-touch api_key.py
-echo "KEY = ''" >api_key.py
-
+# create venv
 python3 -m venv venv
-# Запустить венв
-source $HOME/cli_youtube/venv/bin/activate
-# Установить pip
-# wget https://bootstrap.pypa.io/get-pip.py
-# python3 get-pip.py
-# rm get-pip.py
+# activate venv
+source $(HOME)/.local/share/cli_youtube/venv/bin/activate
 
-
-
+# instal requirements
 pip install -r ./requirements.txt
 deactivate
-#  Установка самого свежего mpv из деб пакета
-# wget https://deb-multimedia.org/pool/main/m/mpv-dmo/mpv_0.36.0-dmo2_amd64.deb
-# отсюда https://deb-multimedia.org/dists/testing/main/binary-amd64/package/mpv
-# или отсюда https://fruit.je/apt
+
 
 # create alias for app
-echo "alias youtube-cli='$HOME/cli_youtube/venv/bin/python $HOME/cli_youtube/main.py'">> $HOME/.bashrc
+echo "alias youtube-cli='$(HOME)/.local/share/cli_youtube/venv/bin/python $(HOME)/.local/share/cli_youtube/main.py'">> $HOME/.bashrc
 source $HOME/.bashrc
 
 

@@ -29,6 +29,3 @@ class MyExceptions:
             self.reason = f'{error}. Check your internet connection.'
         else:
             self.reason = 'An error that cannot be handled occurred during the last operation.'
-
-
-exceptions = MyExceptions()

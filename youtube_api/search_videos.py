@@ -1,8 +1,9 @@
 from requests import get
+from os.path import expanduser
 
 from youtube_api.api_key import KEY
-from exceptions import exceptions
-from database import db
+from exceptions import MyExceptions
+from database import Database
 
 
 # quota cost of 100 unit.
@@ -10,7 +11,7 @@ from database import db
 
 
 class VideoSearcher:
-    __slots__ = ('url', 'nextPageToken', 'prevPageToken', 'part', 'type')
+    __slots__ = ('url', 'nextPageToken', 'prevPageToken', 'part', 'type', 'db', 'exceptions')
 
     def __init__(self):
         self.url = 'https://youtube.googleapis.com/youtube/v3/search?'
@@ -18,6 +19,8 @@ class VideoSearcher:
         self.prevPageToken = ''
         self.part = 'snippet'
         self.type = 'video'
+        self.db = Database(f'{expanduser("~")}/cli_youtube/my_favorites.db')
+        self.exceptions = MyExceptions()
 
     def find_channel_videos(self, channel_id: str, page_token: str = ''):
         url = f"{self.url}part={self.part}&type={self.type}&max_results=50&order=date&channelId={channel_id}" \
@@ -25,14 +28,14 @@ class VideoSearcher:
         try:
             response = get(url).json()
         except Exception as error:
-            exceptions.handler(error)
+            self.exceptions.handler(error)
         else:
             self.nextPageToken = response.get('nextPageToken')
             self.prevPageToken = response.get('prevPageToken')
             videos = response['items']
             for video in videos:
                 video_info = video['snippet']
-                db.add_video(video['id']['videoId'], video_info['title'], video_info['description'],
+                self.db.add_video(video['id']['videoId'], video_info['title'], video_info['description'],
                              video_info['channelTitle'], video_info['publishedAt'],
                              video_info['thumbnails']['default']['url'], video_info['channelId'])
 
@@ -50,7 +53,7 @@ class VideoSearcher:
         try:
             response = get(url).json()
         except Exception as error:
-            exceptions.handler(error)
+            self.exceptions.handler(error)
         else:
             self.nextPageToken = response.get('nextPageToken')
             self.prevPageToken = response.get('prevPageToken')
@@ -58,14 +61,11 @@ class VideoSearcher:
             del response
             for video in videos:
                 video_info = video['snippet']
-                if all(db.check_video_in_db(video['id']['videoId'])):
+                if all(self.db.check_video_in_db(video['id']['videoId'])):
                     self.nextPageToken = None
                     self.prevPageToken = None
                     break
                 else:
-                    db.add_video(video['id']['videoId'], video_info['title'], video_info['description'],
+                    self.db.add_video(video['id']['videoId'], video_info['title'], video_info['description'],
                                  video_info['channelTitle'], video_info['publishedAt'],
                                  video_info['thumbnails']['default']['url'], video_info['channelId'])
-
-
-video_search = VideoSearcher()

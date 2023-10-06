@@ -1,15 +1,17 @@
 from requests import get
+from os.path import expanduser
 
 from youtube_api.api_key import KEY
-from exceptions import exceptions
-from database import db
+from exceptions import MyExceptions
+from database import Database
+
 
 # quota cost of 100 unit.
 # Поиск канала по имени
 
 
 class ChannelSearcher:
-    __slots__ = ('url', 'nextPageToken', 'prevPageToken', 'part', 'type')
+    __slots__ = ('url', 'nextPageToken', 'prevPageToken', 'part', 'type', 'db', 'exceptions')
 
     def __init__(self):
         self.url = 'https://youtube.googleapis.com/youtube/v3/search?'
@@ -17,6 +19,8 @@ class ChannelSearcher:
         self.prevPageToken = ''
         self.part = 'snippet'
         self.type = 'channel'
+        self.db = Database(f'{expanduser("~")}/cli_youtube/my_favorites.db')
+        self.exceptions = MyExceptions()
 
     def find_channel(self, search_query: str, page_token: str = ''):
         url = f"{self.url}part={self.part}&type={self.type}&max_results=50&q={search_query}" \
@@ -24,14 +28,15 @@ class ChannelSearcher:
         try:
             response = get(url).json()
         except Exception as error:
-            exceptions.handler(error)
+            self.exceptions.handler(error)
         else:
             self.nextPageToken = response.get('nextPageToken')
             self.prevPageToken = response.get('prevPageToken')
             channels = response['items']
+
             for channel in channels:
                 channel_info = channel['snippet']
-                db.save_temp_channel(channel_info['channelId'], channel_info['channelTitle'],
+                self.db.save_temp_channel(channel_info['channelId'], channel_info['channelTitle'],
                                      channel_info['publishedAt'], channel_info['description'],
                                      channel_info['thumbnails']['default']['url'])
 
@@ -42,6 +47,3 @@ class ChannelSearcher:
     def prev_page(self, search_query: str):
         if self.prevPageToken:
             self.find_channel(search_query, self.prevPageToken)
-
-
-channel_search = ChannelSearcher()

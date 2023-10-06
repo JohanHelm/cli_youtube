@@ -12,6 +12,3 @@ class Settings:
         self.SUBINTERVAL: int = 0  # empty string between options
         self.SHOW_RESULTS: int = 5
         self.VERSION: float = 1.0
-
-
-settings = Settings()
