@@ -26,7 +26,7 @@ def chunk_menu_options(items: tuple | list, lenght: int, subinterval: int) -> tu
     return menu_items, menu_options_height, interval
 
 
-def give_menu(level: str, string_lenght: int, page: int, show_results: int, channel_id: str,
+def give_menu(level: str, string_lenght: int, page: list, show_results: int, channel_id: str,
               item_to_show: int, subinterval: int, menus) -> tuple:
     channel_id, message = menus.__dict__[level].create_message(page, show_results, item_to_show, channel_id)
     options, results_amount = menus.__dict__[level].create_choices(page, show_results, channel_id)

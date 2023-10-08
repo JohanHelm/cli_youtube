@@ -20,9 +20,11 @@ def add_fav_channel(page, show_results, selected_item):
         while video_search.nextPageToken:
             video_search.next_page(channel_id)
 
+
 def rm_channel(channel_id):
     db = Database(f'{expanduser("~")}/.local/share/cli_youtube/my_favorites.db')
     db.rm_channel(channel_id)
+
 
 def search_channel(search_query):
     db = Database(f'{expanduser("~")}/.local/share/cli_youtube/my_favorites.db')
@@ -32,10 +34,12 @@ def search_channel(search_query):
     # while channel_search.nextPageToken:
     #     channel_search.next_page(search_query)
 
+
 def playback_video(page, show_results, selected_item, channel_id):
     db = Database(f'{expanduser("~")}/.local/share/cli_youtube/my_favorites.db')
     video_id = db.show_channel_videos(page, show_results, channel_id)[0][selected_item][0]
     system(f'mpv -fs https://www.youtube.com/watch?v={video_id}')
+
 
 def update_channel_videos(channel_id):
     video_search = VideoSearcher()

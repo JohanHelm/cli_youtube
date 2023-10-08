@@ -1,7 +1,8 @@
 class Settings:
     __slots__ = (
-    'MENU_Y', 'MENU_X', 'VERTICAL_SHIFT_1', 'HORIZONTAL_SHIFT_1', 'HORIZONTAL_SHIFT_2', 'SUBINTERVAL', 'SHOW_RESULTS',
-    'VERSION')
+        'MENU_Y', 'MENU_X', 'VERTICAL_SHIFT_1', 'HORIZONTAL_SHIFT_1', 'HORIZONTAL_SHIFT_2', 'SUBINTERVAL',
+        'SHOW_RESULTS',
+        'VERSION')
 
     def __init__(self):
         self.MENU_Y: int = 1

@@ -14,7 +14,8 @@ class CliMenuLoop:
         self.selected_item: int = 0
         self.menu_level: str = 'Main_menu'
         self.user_input: str = ''
-        self.page: int = 1
+        self.page: list[int, int] = [1, 1]  # [channels, videos]
+        # self.page = 1
         self.item_to_show: int = 0
         self.channel_id: str = ''
         self.status_message: str = ''
