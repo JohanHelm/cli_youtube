@@ -7,14 +7,15 @@ from database import Database
 
 
 # quota cost of 100 unit.
-# Поиск канала по имени
+# channel search by title
 
 
 class ChannelSearcher:
     __slots__ = ('url', 'nextPageToken', 'prevPageToken', 'part', 'type', 'db', 'exceptions')
 
     def __init__(self):
-        self.url = 'https://youtube.googleapis.com/youtube/v3/search?'
+        self.url = 'https://www.googleapis.com/youtube/v3/search?'
+        # self.url = 'https://youtube.googleapis.com/youtube/v3/search?'  # reserve google api url
         self.nextPageToken = ''
         self.prevPageToken = ''
         self.part = 'snippet'
@@ -46,3 +47,6 @@ class ChannelSearcher:
     def prev_page(self, search_query: str):
         if self.prevPageToken:
             self.find_channel(search_query, self.prevPageToken)
+
+# cs = ChannelSearcher()
+# cs.find_channel('РУКОПОП')

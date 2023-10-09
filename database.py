@@ -10,9 +10,11 @@ class Database:
         cursor = self.connection.cursor()
         cursor.execute("CREATE TABLE IF NOT EXISTS channels("
                        "channel_id TEXT, channelTitle TEXT, publishedAt TEXT, description TEXT, thumbnails TEXT)")
+        cursor.execute("CREATE TABLE IF NOT EXISTS playlists(playlist_id TEXT, title TEXT, published_at TEXT, "
+                       "description TEXT, thumbnails TEXT, channel_id TEXT)")
         cursor.execute("CREATE TABLE IF NOT EXISTS videos(video_id TEXT, title TEXT, description TEXT, "
-                       "author TEXT, publishedAt DATETIME, thumbnails TEXT, channel_id TEXT, "
-                       "viewed BOOLEAN DEFAULT (0))")
+                            "author TEXT, publishedAt DATETIME, thumbnails TEXT, playlist_id TEXT, channel_id TEXT, "
+                            "viewed BOOLEAN DEFAULT (0))")
         cursor.execute("""CREATE TABLE IF NOT EXISTS temp_channel_search(channel_id TEXT,  
                     channelTitle TEXT, publishedAt DATETIME, description TEXT, thumbnails TEXT)""")
 
@@ -78,6 +80,29 @@ class Database:
             cursor = self.connection.cursor()
             cursor.execute("DELETE FROM channels WHERE channel_id = ?", (channel_id,))
             cursor.execute("DELETE FROM videos WHERE channel_id = ?", (channel_id,))
+
+    def add_playlist(self, playist_id, title, published_at, description, thumbnails, channel_id):
+        with self.connection:
+            cursor = self.connection.cursor()
+            cursor.execute(
+                "INSERT INTO playlists (playlist_id, title, published_at, description, thumbnails, channel_id) "
+                "VALUES (?, ?, ?, ?, ?, ?)", (playist_id, title, published_at, description, thumbnails, channel_id,))
+
+    def show_channel_playlists(self, page, show_results, channel_id):
+        with self.connection:
+            cursor = self.connection.cursor()
+            pages = ceil(
+                cursor.execute("SELECT COUNT(*) FROM playlists WHERE channel_Id = ?", (channel_id,)).fetchone()[
+                    0] / show_results)
+            offset = (page - 1) * show_results
+            return cursor.execute(
+                "SELECT playlist_id, title, published_at FROM playlists WHERE channel_id = ? LIMIT ? OFFSET ?",
+                (channel_id, show_results, offset,)).fetchall(), pages
+
+    def mark_videos_in_playlist(self, playlist_id, video_id):
+        with self.connection:
+            cursor = self.connection.cursor()
+            cursor.execute("UPDATE videos SET playlist_id = ? WHERE video_id = ?", (playlist_id, video_id,))
 
     def add_video(self, video_id: str, title: str, description: str, author: str, published_at: str, thumbnails: str,
                   channel_id: str):

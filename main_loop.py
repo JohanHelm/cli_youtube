@@ -60,7 +60,7 @@ class CliMenuLoop:
                                         line)
 
             # Create service message
-            self.status_message = f"{self.menu_level} {self.channel_id} {self.item_to_show} {self.page}"
+            self.status_message = f"{self.menu_level} {self.user_input} {self.item_to_show} {self.page}"
             if self.status_message:
                 menu_win.addstr(menu_height - menu_text_height - menu_options_height - 2 * interval, 2,
                                 f"Status log: {self.status_message}\n"

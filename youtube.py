@@ -4,6 +4,7 @@ from os.path import expanduser
 from database import Database
 from youtube_api.search_channels import ChannelSearcher
 from youtube_api.search_videos import VideoSearcher
+from youtube_api.search_playlists import PlaylistSearcher
 
 
 def add_fav_channel(page, show_results, selected_item):
@@ -19,6 +20,11 @@ def add_fav_channel(page, show_results, selected_item):
         video_search.find_channel_videos(channel_id)
         while video_search.nextPageToken:
             video_search.next_page(channel_id)
+        # get all channel playlists
+        playlist_search = PlaylistSearcher()
+        playlist_search.find_channel_playlists(channel_id)
+        while playlist_search.pl_nextPageToken:
+            playlist_search.pl_next_page(channel_id)
 
 
 def rm_channel(channel_id):

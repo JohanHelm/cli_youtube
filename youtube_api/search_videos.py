@@ -14,7 +14,8 @@ class VideoSearcher:
     __slots__ = ('url', 'nextPageToken', 'prevPageToken', 'part', 'type', 'db', 'exceptions')
 
     def __init__(self):
-        self.url = 'https://youtube.googleapis.com/youtube/v3/search?'
+        self.url = 'https://www.googleapis.com/youtube/v3/search?'
+        # self.url = 'https://youtube.googleapis.com/youtube/v3/search?'  # reserve google api url
         self.nextPageToken = ''
         self.prevPageToken = ''
         self.part = 'snippet'
@@ -70,4 +71,4 @@ class VideoSearcher:
                                  video_info['channelTitle'], video_info['publishedAt'],
                                  video_info['thumbnails']['default']['url'], video_info['channelId'])
 
-s = VideoSearcher()
+# s = VideoSearcher()
