@@ -7,17 +7,16 @@ from settings import Settings
 
 
 class CliMenuLoop:
-    __slots__ = ('selected_item', 'menu_level', 'user_input', 'page', 'item_to_show', 'channel_id', 'status_message',
+    __slots__ = ('selected_item', 'menu_level', 'user_input', 'page', 'item_to_show', 'unit_id', 'status_message',
                  'exceptions', 'settings', 'menus')
 
     def __init__(self):
         self.selected_item: int = 0
         self.menu_level: str = 'Main_menu'
         self.user_input: str = ''
-        self.page: list[int, int] = [1, 1]  # [channels, videos]
-        # self.page = 1
+        self.page: list[int, int, int] = [1, 1, 1]  # [channels, videos, playlists]
+        self.unit_id: list[str, str, str] = ['', '', '']  # [channel_id, video_id, playlist_ id]
         self.item_to_show: int = 0
-        self.channel_id: str = ''
         self.status_message: str = ''
         self.exceptions = MyExceptions()
         self.settings = Settings()
@@ -39,8 +38,8 @@ class CliMenuLoop:
             menu_win.clear()
 
             menu_text, menu_text_height, menu_items, menu_options_height, interval, demand_user_input, \
-            self.channel_id, results_amount = give_menu(
-                self.menu_level, menu_width - 10, self.page, self.settings.SHOW_RESULTS, self.channel_id,
+            self.unit_id, results_amount = give_menu(
+                self.menu_level, menu_width - 10, self.page, self.settings.SHOW_RESULTS, self.unit_id,
                 self.item_to_show, self.settings.SUBINTERVAL, self.menus)
 
             vertical_shift_2 = menu_height - menu_options_height
@@ -60,7 +59,7 @@ class CliMenuLoop:
                                         line)
 
             # Create service message
-            self.status_message = f"{self.menu_level} {self.user_input} {self.item_to_show} {self.page}"
+            self.status_message = f"{self.menu_level} {self.page} {self.unit_id}"
             if self.status_message:
                 menu_win.addstr(menu_height - menu_text_height - menu_options_height - 2 * interval, 2,
                                 f"Status log: {self.status_message}\n"
@@ -79,8 +78,10 @@ class CliMenuLoop:
                 self.menu_level, self.page, self.user_input, self.status_message, self.item_to_show = \
                     self.menus.__dict__[self.menu_level].choice_handler(menu_items, self.selected_item, self.menu_level,
                                                                         self.page,
-                                                    self.user_input, self.status_message, results_amount,
-                                                    self.channel_id, self.item_to_show, self.settings.SHOW_RESULTS)
+                                                                        self.user_input, self.status_message,
+                                                                        results_amount,
+                                                                        self.unit_id, self.item_to_show,
+                                                                        self.settings.SHOW_RESULTS)
 
             if demand_user_input and not self.user_input:
                 curses.echo()  # Enable on-screen input display
@@ -92,9 +93,10 @@ class CliMenuLoop:
                     self.exceptions.handler(error)
                 else:
                     curses.noecho()  # Disable on-screen input display
-                    self.menu_level, self.page, self.user_input, self.status_message, self.item_to_show = self.menus.__dict__[
+                    self.menu_level, self.page, self.user_input, self.status_message, self.item_to_show = \
+                    self.menus.__dict__[
                         self.menu_level].choice_handler(menu_items, self.selected_item, self.menu_level, self.page,
                                                         self.user_input, self.status_message, results_amount,
-                                                        self.channel_id, self.item_to_show, self.settings.SHOW_RESULTS)
+                                                        self.unit_id, self.item_to_show, self.settings.SHOW_RESULTS)
 
         # curses.endwin()

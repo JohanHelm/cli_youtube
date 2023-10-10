@@ -1,9 +1,10 @@
-from requests import get
 from os.path import expanduser
 
-from youtube_api.api_key import KEY
-from exceptions import MyExceptions
+from requests import get
+
 from database import Database
+from exceptions import MyExceptions
+from youtube_api.api_key import KEY
 
 
 # quota cost of 100 unit.
@@ -38,8 +39,8 @@ class VideoSearcher:
             for video in videos:
                 video_info = video['snippet']
                 self.db.add_video(video['id']['videoId'], video_info['title'], video_info['description'],
-                                 video_info['channelTitle'], video_info['publishedAt'],
-                                 video_info['thumbnails']['default']['url'], video_info['channelId'])
+                                  video_info['channelTitle'], video_info['publishedAt'],
+                                  video_info['thumbnails']['default']['url'], video_info['channelId'])
 
     def next_page(self, search_query: str):
         if self.nextPageToken:
@@ -63,12 +64,10 @@ class VideoSearcher:
             for video in videos:
                 video_info = video['snippet']
                 if all(self.db.check_video_in_db(video['id']['videoId'])):
-                    self.nextPageToken = None
-                    self.prevPageToken = None
+                    self.nextPageToken = ''
+                    self.prevPageToken = ''
                     break
                 else:
                     self.db.add_video(video['id']['videoId'], video_info['title'], video_info['description'],
-                                 video_info['channelTitle'], video_info['publishedAt'],
-                                 video_info['thumbnails']['default']['url'], video_info['channelId'])
-
-# s = VideoSearcher()
+                                      video_info['channelTitle'], video_info['publishedAt'],
+                                      video_info['thumbnails']['default']['url'], video_info['channelId'])

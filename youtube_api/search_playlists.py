@@ -1,12 +1,15 @@
-import requests
 from os.path import expanduser
 
-from youtube_api.api_key import KEY
-from exceptions import MyExceptions
+import requests
+
 from database import Database
+from exceptions import MyExceptions
+from youtube_api.api_key import KEY
+
 
 # quota cost of 1 unit.
 # playlist search by channel id
+
 
 class PlaylistSearcher:
     __slots__ = ('pl_nextPageToken', 'pl_prevPageToken', 'vi_nextPageToken', 'vi_prevPageToken', 'part',
@@ -34,9 +37,15 @@ class PlaylistSearcher:
             self.pl_prevPageToken = response.get('prevPageToken', '')
             playlists = response.get('items', '')
             for playlist in playlists:
-                self.db.add_playlist(playlist['id'], playlist['snippet']['title'], playlist['snippet']['publishedAt'],
-                                playlist['snippet']['description'], playlist['snippet']['thumbnails']['default']['url'],
-                                channel_id)
+                if all(self.db.check_playlist_in_db(playlist['id'])):
+                    self.pl_nextPageToken = ''
+                    self.pl_prevPageToken = ''
+                    break
+                else:
+                    self.db.add_playlist(playlist['id'], playlist['snippet']['title'], playlist['snippet']['publishedAt'],
+                                     playlist['snippet']['description'],
+                                     playlist['snippet']['thumbnails']['default']['url'],
+                                     channel_id)
                 self.find_playlist_videos(playlist['id'])
                 while self.vi_nextPageToken:
                     self.vi_next_page(playlist['id'])
@@ -71,9 +80,3 @@ class PlaylistSearcher:
     def vi_prev_page(self, playlist_id: str):
         if self.vi_prevPageToken:
             self.find_playlist_videos(playlist_id, self.vi_prevPageToken)
-
-
-
-# ps = PlaylistSearcher()
-# # ps.find_channel_playlists('UC5dgoavpIertLkNDDITDoBQ')
-# ps.find_playlist_videos('PL5FMLPRj1j6JcmFb0oC7hDycF6nSNRsfl')

@@ -1,9 +1,10 @@
-from requests import get
 from os.path import expanduser
 
-from youtube_api.api_key import KEY
-from exceptions import MyExceptions
+from requests import get
+
 from database import Database
+from exceptions import MyExceptions
+from youtube_api.api_key import KEY
 
 
 # quota cost of 100 unit.
@@ -37,8 +38,8 @@ class ChannelSearcher:
             for channel in channels:
                 channel_info = channel['snippet']
                 self.db.save_temp_channel(channel_info['channelId'], channel_info['channelTitle'],
-                                     channel_info['publishedAt'], channel_info['description'],
-                                     channel_info['thumbnails']['default']['url'])
+                                          channel_info['publishedAt'], channel_info['description'],
+                                          channel_info['thumbnails']['default']['url'])
 
     def next_page(self, search_query: str):
         if self.nextPageToken:
@@ -47,6 +48,3 @@ class ChannelSearcher:
     def prev_page(self, search_query: str):
         if self.prevPageToken:
             self.find_channel(search_query, self.prevPageToken)
-
-# cs = ChannelSearcher()
-# cs.find_channel('РУКОПОП')

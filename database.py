@@ -13,8 +13,8 @@ class Database:
         cursor.execute("CREATE TABLE IF NOT EXISTS playlists(playlist_id TEXT, title TEXT, published_at TEXT, "
                        "description TEXT, thumbnails TEXT, channel_id TEXT)")
         cursor.execute("CREATE TABLE IF NOT EXISTS videos(video_id TEXT, title TEXT, description TEXT, "
-                            "author TEXT, publishedAt DATETIME, thumbnails TEXT, playlist_id TEXT, channel_id TEXT, "
-                            "viewed BOOLEAN DEFAULT (0))")
+                       "author TEXT, publishedAt DATETIME, thumbnails TEXT, playlist_id TEXT, channel_id TEXT, "
+                       "viewed BOOLEAN DEFAULT (0))")
         cursor.execute("""CREATE TABLE IF NOT EXISTS temp_channel_search(channel_id TEXT,  
                     channelTitle TEXT, publishedAt DATETIME, description TEXT, thumbnails TEXT)""")
 
@@ -127,3 +127,21 @@ class Database:
             cursor = self.connection.cursor()
             return cursor.execute("SELECT EXISTS (SELECT * FROM videos WHERE video_id = ?)",
                                   (video_id,)).fetchone()
+
+    def check_playlist_in_db(self, playlist_id: str) -> tuple:
+        with self.connection:
+            cursor = self.connection.cursor()
+            return cursor.execute("SELECT EXISTS (SELECT * FROM playlists WHERE playlist_id = ?)",
+                                  (playlist_id,)).fetchone()
+
+
+    def show_playlist_videos(self, page: int, show_results: int, playlist_id: str) -> tuple:
+        with self.connection:
+            cursor = self.connection.cursor()
+            pages = ceil(cursor.execute("SELECT COUNT(*) FROM videos WHERE playlist_id = ?", (playlist_id,)).fetchone()[
+                             0] / show_results)
+            offset = (page - 1) * show_results
+            return cursor.execute(
+                "SELECT video_id, title, publishedAt FROM videos WHERE playlist_id = ? "
+                "ORDER BY publishedAt DESC LIMIT ? OFFSET ?",
+                (playlist_id, show_results, offset,)).fetchall(), pages
