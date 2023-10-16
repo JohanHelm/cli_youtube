@@ -102,9 +102,9 @@ class FindChannel(MenuGenerator):
     def __init__(self):
         super().__init__(True)
 
-    def create_message(self, page: list, show_results: int, item_to_show: int, unit_id: list) -> tuple[str, str]:
+    def create_message(self, page: list, show_results: int, item_to_show: int, unit_id: list) -> tuple[list, str]:
         message = 'Type channel title.'
-        return '', message
+        return unit_id, message
 
     def create_choices(self, page: list, show_results: int, unit_id: list) -> tuple:
         options = ('Back_to_Main_menu', 'Exit')
@@ -195,7 +195,8 @@ class AddApiKey(MenuGenerator):
                        status_message: str, results_amount: int, unit_id: list, item_to_show: int,
                        show_results: int) -> tuple[str, list, str, str, int]:
         if user_input:
-            with open('api_key.py', 'w', encoding='utf-8') as file:
+            file_with_key = f'{expanduser("~")}/.local/share/cli_youtube/youtube_api/api_key.py'
+            with open(file_with_key, 'w', encoding='utf-8') as file:
                 file.write(f'KEY = "{user_input}"')
             user_input = ''
         else:
